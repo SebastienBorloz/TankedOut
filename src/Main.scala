@@ -1,6 +1,6 @@
 package ch.hevs.gdx2d
 
-import ch.hevs.gdx2d.componants.Joueur
+import composants.Joueur
 import ch.hevs.gdx2d.components.physics.utils.PhysicsScreenBoundaries
 import ch.hevs.gdx2d.desktop.physics.DebugRenderer
 import ch.hevs.gdx2d.lib.physics.PhysicsWorld
@@ -11,7 +11,6 @@ import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.desktop.PortableApplication
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
-import ch.hevs.gdx2d.componants.Car
 
 
 /**
@@ -27,24 +26,25 @@ object Main {
   }
 }
 
-class Main extends PortableApplication {
-  private[gdx2d] var dbgRenderer = null
-  private var imgBitmap = null
-  private var fong = null
-  private[gdx2d] val world = PhysicsWorld.getInstance
+class Main extends PortableApplication(2000, 1000, true) {
+  private var dbgRenderer: DebugRenderer = null
+  private var imgBitmap: BitmapImage = null
+  private var fong: BitmapImage = null
+  private val world = PhysicsWorld.getInstance
   private var zoom = .0
-  //Car c1;
-  private[gdx2d] var p1 = null
+  private var p1: Joueur = null
 
   override def onInit(): Unit = { // No gravity in this world
     world.setGravity(new Vector2(0, 0))
     setTitle("Test map")
-    // Load a custom image (or from the lib "res/lib/icon64.png")
-    imgBitmap = new BitmapImage("data/images/hei-pi.png")
-    fong = new BitmapImage("data/images/sapm.png")
+
+    /*imgBitmap = new BitmapImage("data/images/hei-pi.png")
+    fong = new BitmapImage("data/images/sapm.png")*/
     dbgRenderer = new DebugRenderer
+
     // Create the obstacles in the scene
     new PhysicsScreenBoundaries(getWindowWidth * 10, getWindowHeight * 10)
+
     // Our car
     //c1 = new Car(30, 70, new Vector2(200, 200), (float) Math.PI, 10, 30, 15);
     p1 = new Joueur(30, new Vector2(200, 200), 0)
@@ -67,8 +67,8 @@ class Main extends PortableApplication {
     // Physics update
     PhysicsWorld.updatePhysics(Gdx.graphics.getDeltaTime)
     // Camera follows the hero
-    g.zoom(zoom)
-    g.moveCamera(p1.getPos.x - getWindowWidth / 2 * zoom, p1.getPos.y - getWindowWidth / 2 * zoom)
+    g.zoom(zoom.toFloat)
+    g.moveCamera((p1.getPos.x - getWindowWidth / 2 * zoom).toFloat, (p1.getPos.y - getWindowWidth / 2 * zoom).toFloat)
 
     /**
      * Move the car according to key presses

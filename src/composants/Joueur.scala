@@ -6,6 +6,7 @@ import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
 import ch.hevs.gdx2d.lib.interfaces.DrawableObject
+import com.badlogic.gdx.{Gdx, Input}
 
 import java.util
 
@@ -43,34 +44,42 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
         (len / 1000) * 3600
     }
 
-    protected def getLocalVelocity: Vector2 = {
+    def getLocalVelocity: Vector2 = {
         playerBox.getBody.getLocalVector(playerBox.getBody.getLinearVelocityFromLocalPoint(new Vector2(0, 0)))
     }
 
     def update(deltaTime: Float): Unit = { // update revolving wheels
-        var baseVector = Vector2.Zero
+        var baseVector = new Vector2(0,0)
+        //playerBox.setBodyLinearVelocity(baseVector)
         // if accelerator is pressed down and speed limit has not been reached,
         // go forwards
-        if(moveUp){baseVector.x += 1}
-        if(moveDown){baseVector.x -= 1}
+        if(moveUp){baseVector.y += 1}
+        if(moveDown){baseVector.y -= 1}
         if(moveLeft){baseVector.x -= 1}
         if(moveRight){baseVector.x += 1}
-        if (this.getSpeedKMH < this.stats.movementSpeed * 15) {
-            baseVector = new Vector2(0, -1)
+
+        if (this.getSpeedKMH < this.stats.movementSpeed * 15){
+
         }
         if(!moveUp && !moveDown && !moveLeft && !moveRight) { // slow down if not accelerating
-          baseVector = new Vector2(0, 0)
-          // Stop the car when it is going slow
-          if (this.getSpeedKMH < 4) this.setSpeed(0)
-          else if (this.getLocalVelocity.x < 0) baseVector = new Vector2(0, 0.5f)
-          else if (this.getLocalVelocity.y > 0) baseVector = new Vector2(0, -0.5f)
+            baseVector = new Vector2(0,0)
+            baseVector = playerBox.getBodyLinearVelocity().scl(-0.5f)
+            //playerBox.setBodyLinearVelocity(baseVector)
         }
+
 
         // multiply by engine power, which gives us a force vector relative to
         // the wheel
-        val forceVector = baseVector.scl(10)
-
+        val forceVector = baseVector.scl(25)
         val position = playerBox.getBodyWorldCenter
-        playerBox.applyBodyForce(playerBox.getBodyWorldVector(new Vector2(forceVector.x, forceVector.y)), position, true)
+        val vTest: Vector2 = playerBox.getBodyWorldVector(new Vector2(baseVector.x, baseVector.y))
+        Gdx.app.log("[Info debug]",s"UP: $moveUp, DOWN: $moveDown, LEFT: $moveLeft, RIGHT: $moveRight, Vecteur: ${vTest.toString}")
+        playerBox.applyBodyForce(forceVector, position, true)
+
+        val longActu: Float = playerBox.getBodyLinearVelocity.len()
+        val vitesseLimite: Int = 15 * stats.movementSpeed
+        if (longActu > vitesseLimite){
+            playerBox.setBodyLinearVelocity(playerBox.getBodyLinearVelocity.scl(vitesseLimite / longActu))
+        }
     }
 }

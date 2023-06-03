@@ -10,13 +10,21 @@ import com.badlogic.gdx.physics.box2d.joints.PrismaticJointDef
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef
 
 
-class Canon(var joueur: Joueur, val canonPos: Vector2, val width: Float, val length: Float, var shooting: Boolean) {
-  val world: World = PhysicsWorld.getInstance
-  val x: Vector2 = PhysicsConstants.coordPixelsToMeters(canonPos)
-  // Convert player position to pixels
-  val pos: Vector2 = joueur.playerBox.getBody.getWorldPoint(x)
-  // Create the wheel
-  val wheel = new PhysicsBox("wheel", PhysicsConstants.coordMetersToPixels(pos), width, length / 2, joueur.playerBox.getBodyAngle)
-  this.body = wheel.getBody
-  var body: Body = null
+class Canon(var joueur: Joueur, val canonPos: Vector2, val width: Float, val length: Float) {
+    val world: World = PhysicsWorld.getInstance
+    val x: Vector2 = PhysicsConstants.coordPixelsToMeters(canonPos)
+    var body: Body = null
+    // Convert player position to pixels
+    val pos: Vector2 = joueur.getPos
+    pos.x += 30
+
+    // Create the canon
+    val canon = new PhysicsBox("wheel", pos, width, length / 2, joueur.playerBox.getBodyAngle)
+    this.body = canon.getBody
+
+    var jointDef: RevoluteJointDef = new RevoluteJointDef()
+    jointDef.initialize(joueur.playerBox.getBody(), this.body, this.body.getWorldCenter())
+    jointDef.enableMotor = false; //we'll be controlling the wheel's angle manually
+    world.createJoint(jointDef)
+
 }

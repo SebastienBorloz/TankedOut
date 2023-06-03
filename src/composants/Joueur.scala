@@ -15,13 +15,14 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
     val playerBox = new PhysicsCircle("playerCenter", inPosition, ray, angle)
     playerBox.setCollisionGroup(-1)
     // Initialize canon
-    //this.canon = new Canon(this, );
+    this.canon = new Canon(this, playerBox.getBodyPosition, 20, 50);
     private val stats: statSheet = new statSheet(1,1,1,1,1,1,1,1)
     protected var canon: Canon = null
     var moveRight = false
     var moveLeft = false
     var moveUp = false
     var moveDown = false
+    var angleSouris: Float = 0
 
     def setSpeed(speed: Float): Unit = {
         /*   speed - speed in kilometers per hour   */
@@ -58,18 +59,11 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
         if(moveLeft){baseVector.x -= 1}
         if(moveRight){baseVector.x += 1}
 
-        if (this.getSpeedKMH < this.stats.movementSpeed * 15){
-
-        }
         if(!moveUp && !moveDown && !moveLeft && !moveRight) { // slow down if not accelerating
             baseVector = new Vector2(0,0)
-            baseVector = playerBox.getBodyLinearVelocity().scl(-0.5f)
-            //playerBox.setBodyLinearVelocity(baseVector)
+            baseVector = playerBox.getBodyLinearVelocity().scl(-0.75f)
         }
 
-
-        // multiply by engine power, which gives us a force vector relative to
-        // the wheel
         val forceVector = baseVector.scl(25)
         val position = playerBox.getBodyWorldCenter
         val vTest: Vector2 = playerBox.getBodyWorldVector(new Vector2(baseVector.x, baseVector.y))

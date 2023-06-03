@@ -11,7 +11,6 @@ import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.desktop.PortableApplication
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
-import exp.trianglePellet
 
 
 /**
@@ -51,7 +50,6 @@ class Main extends PortableApplication(2000, 1000) {
         p1 = new Joueur(30, new Vector2(200, 200), 0)
         zoom = 2
 
-        val ui: trianglePellet = new trianglePellet(new Vector2(100,100))
     }
 
     /**

@@ -21,9 +21,24 @@ class PelletFactory {
     def pelletUpdate(): Unit ={
         //pellet triangulaire
         if(triangleBox.length < NBR_TRIANGLES){
-            if(System.nanoTime() > lastTriangle + 10000000){
+            if(System.currentTimeMillis() > lastTriangle + 1000){
                 lastTriangle = System.nanoTime()
+                spawnTriangle()
+            }
 
+            if (System.currentTimeMillis() > lastSquare + 5000) {
+                lastSquare = System.nanoTime()
+                spawnSquare()
+            }
+
+            if (System.currentTimeMillis() > lastHexagon + 10000) {
+                lastHexagon = System.nanoTime()
+                spawnHexagon()
+            }
+
+            if (System.currentTimeMillis() > lastBigHexa + 30000) {
+                lastBigHexa = System.nanoTime()
+                spawnBigHexa()
             }
         }
     }

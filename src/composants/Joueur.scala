@@ -15,7 +15,7 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
     val playerBox = new PhysicsCircle("playerCenter", inPosition, ray, angle)
     playerBox.setCollisionGroup(-1)
     // Initialize canon
-    this.canon = new Canon(this, playerBox.getBodyPosition, 20, 50);
+    //this.canon = new Canon(this, playerBox.getBodyPosition, 20, 50);
     private val stats: statSheet = new statSheet(1,1,1,1,1,1,1,1)
     protected var canon: Canon = null
     var moveRight = false
@@ -23,6 +23,7 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
     var moveUp = false
     var moveDown = false
     var angleSouris: Float = 0
+
 
     def setSpeed(speed: Float): Unit = {
         /*   speed - speed in kilometers per hour   */
@@ -67,7 +68,7 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
         val forceVector = baseVector.scl(25)
         val position = playerBox.getBodyWorldCenter
         val vTest: Vector2 = playerBox.getBodyWorldVector(new Vector2(baseVector.x, baseVector.y))
-        Gdx.app.log("[Info debug]",s"UP: $moveUp, DOWN: $moveDown, LEFT: $moveLeft, RIGHT: $moveRight, Vecteur: ${vTest.toString}")
+        //Gdx.app.log("[Info debug]",s"UP: $moveUp, DOWN: $moveDown, LEFT: $moveLeft, RIGHT: $moveRight, Vecteur: ${vTest.toString}")
         playerBox.applyBodyForce(forceVector, position, true)
 
         val longActu: Float = playerBox.getBodyLinearVelocity.len()

@@ -11,6 +11,7 @@ import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.desktop.PortableApplication
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.World
+import exp.{PelletFactory, bigHexaPellet, hexagonPellet}
 
 
 /**
@@ -33,6 +34,7 @@ class Main extends PortableApplication(2000, 1000) {
     private val world = PhysicsWorld.getInstance
     private var zoom = .0
     private var p1: Joueur = null
+    private var polyGen: PelletFactory = new PelletFactory()
 
     override def onInit(): Unit = { // No gravity in this world
         world.setGravity(new Vector2(0, 0))
@@ -66,6 +68,7 @@ class Main extends PortableApplication(2000, 1000) {
         g.clear()
         //g.drawBackground(fong, 1, 1);
         // Physics update
+        polyGen.pelletUpdate()
         PhysicsWorld.updatePhysics(Gdx.graphics.getDeltaTime)
         // Camera follows the hero
         g.zoom(zoom.toFloat)

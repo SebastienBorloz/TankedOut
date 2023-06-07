@@ -15,7 +15,7 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
     val playerBox = new PhysicsCircle("playerCenter", inPosition, ray, angle)
     playerBox.setCollisionGroup(-1)
     // Initialize canon
-    //this.canon = new Canon(this, playerBox.getBodyPosition, 20, 50);
+    //this.canon = new Canon(this, playerBox.getBodyPosition, 20, 50)
     private val stats: statSheet = new statSheet(1,1,1,1,1,1,1,1)
     protected var canon: Canon = null
     var moveRight = false

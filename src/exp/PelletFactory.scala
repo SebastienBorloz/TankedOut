@@ -1,8 +1,10 @@
 package exp
 
+import com.badlogic.gdx.math.MathUtils.random
 import com.badlogic.gdx.math.Vector2
 
 import scala.collection.mutable.ArrayBuffer
+import scala.util.Random.javaRandomToRandom
 
 class PelletFactory {
     var triangleStash: ArrayBuffer[trianglePellet] = new ArrayBuffer[trianglePellet]()
@@ -55,28 +57,36 @@ class PelletFactory {
     def spawnTriangle(): Unit ={
         println("triangle flag!")
         //TODO: creation du point d'apparition et stockage dans spawnpoint
-        var spawnPoint: Vector2 = new Vector2(50,50)
+        val positiongX: Int = random.between(50, 5950)
+        val positiongY: Int = random.between(50, 2950)
+        var spawnPoint: Vector2 = new Vector2(positiongX,positiongY)
         triangleStash.addOne(new trianglePellet(spawnPoint))
     }
 
     def spawnSquare(): Unit ={
         println("square flag!")
         //TODO: creation du point d'apparition et stockage dans spawnpoint
-        var spawnPoint: Vector2 = new Vector2(50, 50)
+        val positiongX: Int = random.between(50, 5950)
+        val positiongY: Int = random.between(50, 2950)
+        var spawnPoint: Vector2 = new Vector2(positiongX, positiongY)
         squareStash.addOne(new squarePellet(spawnPoint))
     }
 
     def spawnHexagon(): Unit ={
         println("hexagon flag!")
         //TODO: creation du point d'apparition et stockage dans spawnpoint
-        var spawnPoint: Vector2 = new Vector2(50, 50)
+        val positiongX: Int = random.between(50, 5950)
+        val positiongY: Int = random.between(50, 2950)
+        var spawnPoint: Vector2 = new Vector2(positiongX, positiongY)
         hexagonStash.addOne(new hexagonPellet(spawnPoint))
     }
 
     def spawnBigHexa(): Unit = {
         println("bigHexa flag!")
         //TODO: creation du point d'apparition et stockage dans spawnpoint
-        var spawnPoint: Vector2 = new Vector2(50, 50)
+        val positiongX: Int = random.between(50, 5950)
+        val positiongY: Int = random.between(50, 2950)
+        var spawnPoint: Vector2 = new Vector2(positiongX, positiongY)
         bigHexaStash.addOne(new bigHexaPellet(spawnPoint))
     }
 }

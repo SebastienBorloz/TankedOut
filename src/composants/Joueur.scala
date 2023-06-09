@@ -101,6 +101,17 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
             }
             Boulettes.addOne(new Bullet(10, 10, mouseAngle, spawnPos))
         }
+
+        try {
+            for (i <- Boulettes.indices) {
+                if (Boulettes(i).bulletBox.getBodyAngularVelocity != Boulettes(i).initVector) {
+                    Boulettes(i).Collisiong
+                    Boulettes.remove(i)
+                }
+            }
+        }catch{
+            case _ => println("cringe")
+        }
     }
 
     def getAngle(v1: Vector2, v2: Vector2): Double = {

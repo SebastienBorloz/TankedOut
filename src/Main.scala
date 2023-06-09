@@ -60,16 +60,6 @@ class Main extends PortableApplication(2000, 1000) {
 
     }
 
-    /**
-     * Animation related variables
-     */
-    private val direction = 1
-    private val currentTime = 0
-    final private val ANIMATION_LENGTH = 2f // Animation length (in seconds)
-
-    final private val MIN_ANGLE = -20
-    final private val MAX_ANGLE = 20
-
     override def onGraphicRender(g: GdxGraphics): Unit = {
         g.clear()
         //g.drawBackground(fong, 1, 1);

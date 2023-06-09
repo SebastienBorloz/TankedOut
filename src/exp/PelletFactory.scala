@@ -12,9 +12,9 @@ class PelletFactory {
     var hexagonStash: ArrayBuffer[hexagonPellet] = new ArrayBuffer[hexagonPellet]()
     var bigHexaStash: ArrayBuffer[bigHexaPellet] = new ArrayBuffer[bigHexaPellet]()
     /** valeurs du nombres maximum de chaque pellets */
-    val NBR_TRIANGLES = 1000
-    val NBR_SQUARES = 1000
-    val NBR_HEXAGONS = 1000
+    val NBR_TRIANGLES = 50
+    val NBR_SQUARES = 20
+    val NBR_HEXAGONS = 8
     val NBR_BIGHEXAS = 4
 
     var lastTriangle: Long = 0
@@ -116,7 +116,6 @@ class PelletFactory {
     }
 
     def spawnTriangle(): Unit ={
-        println("triangle flag!")
         val positiongX: Int = spawnCoorX("t")
         val positiongY: Int = spawnCoorX("t")
         var spawnPoint: Vector2 = new Vector2(positiongX,positiongY)
@@ -124,7 +123,6 @@ class PelletFactory {
     }
 
     def spawnSquare(): Unit ={
-        println("square flag!")
         val positiongX: Int = spawnCoorX("s")
         val positiongY: Int = spawnCoorX("s")
         var spawnPoint: Vector2 = new Vector2(positiongX, positiongY)
@@ -132,7 +130,6 @@ class PelletFactory {
     }
 
     def spawnHexagon(): Unit ={
-        println("hexagon flag!")
         val positiongX: Int = spawnCoorX("h")
         val positiongY: Int = spawnCoorX("h")
         var spawnPoint: Vector2 = new Vector2(positiongX, positiongY)
@@ -140,7 +137,6 @@ class PelletFactory {
     }
 
     def spawnBigHexa(): Unit = {
-        println("bigHexa flag!")
         val positiongX: Int = spawnCoorX("H")
         val positiongY: Int = spawnCoorY("H")
         var spawnPoint: Vector2 = new Vector2(positiongX, positiongY)

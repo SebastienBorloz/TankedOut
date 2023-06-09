@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2
 
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Random.javaRandomToRandom
+import scala.io.AnsiColor._
 
 class PelletFactory {
     var triangleStash: ArrayBuffer[trianglePellet] = new ArrayBuffer[trianglePellet]()
@@ -12,15 +13,22 @@ class PelletFactory {
     var hexagonStash: ArrayBuffer[hexagonPellet] = new ArrayBuffer[hexagonPellet]()
     var bigHexaStash: ArrayBuffer[bigHexaPellet] = new ArrayBuffer[bigHexaPellet]()
     /** valeurs du nombres maximum de chaque pellets */
-    val NBR_TRIANGLES = 1000
-    val NBR_SQUARES = 1000
-    val NBR_HEXAGONS = 1000
-    val NBR_BIGHEXAS = 4
+    val NBR_TRIANGLES = 200
+    val NBR_SQUARES = 100
+    val NBR_HEXAGONS = 50
+    val NBR_BIGHEXAS = 6
 
     var lastTriangle: Long = 0
     var lastSquare: Long = 0
     var lastHexagon: Long = 0
     var lastBigHexa: Long = 0
+
+    val INTERNAL_RADIUS: Int = 50
+    var EXTERNAL_RADIUS: Int = 800
+    val BOX_WIDTH: Int = 6000
+    val BOX_HEIGHT: Int = 3000
+    val CENTER_X: Int = BOX_WIDTH / 2
+    val CENTER_Y: Int = BOX_HEIGHT / 2
 
     var gen: Int = 0
 
@@ -35,7 +43,9 @@ class PelletFactory {
         if (triangleStash.length < NBR_TRIANGLES & gen < NBR_TRIANGLES) {
             if (System.currentTimeMillis() > lastTriangle) {
                 lastTriangle = System.currentTimeMillis()
-                spawnTriangle()
+                for(i <- 0 until NBR_TRIANGLES){
+                    spawnTriangle()
+                }
             }
         }
 
@@ -43,12 +53,15 @@ class PelletFactory {
             if (System.currentTimeMillis() > lastSquare + 5000) {
                 lastSquare = System.currentTimeMillis()
                 spawnSquare()
+
             }
         }
         if (squareStash.length < NBR_SQUARES & gen < NBR_SQUARES) {
             if (System.currentTimeMillis() > lastSquare) {
                 lastSquare = System.currentTimeMillis()
-                spawnSquare()
+                for (i <- 0 until NBR_SQUARES) {
+                    spawnSquare()
+                }
             }
         }
 
@@ -62,7 +75,9 @@ class PelletFactory {
         if (hexagonStash.length < NBR_HEXAGONS & gen < NBR_HEXAGONS) {
             if (System.currentTimeMillis() > lastHexagon) {
                 lastHexagon = System.currentTimeMillis()
-                spawnHexagon()
+                for (i <- 0 until NBR_HEXAGONS) {
+                    spawnHexagon()
+                }
             }
         }
 
@@ -75,75 +90,77 @@ class PelletFactory {
         else if(bigHexaStash.length < NBR_BIGHEXAS & gen < NBR_BIGHEXAS) {
             if (System.currentTimeMillis() > lastBigHexa) {
                 lastBigHexa = System.currentTimeMillis()
-                spawnBigHexa()
+                for (i <- 0 until NBR_BIGHEXAS) {
+                    spawnBigHexa()
+                }
             }
         }
         gen += 1
     }
 
     /** fonctions de génération des coordonées du point d'apparition des pellets */
-    def spawnCoorX(s: String): Int = {
-        val innerRad: Int = 50
-        var ausserRad: Int = 350
-        val centerX: Int = 3000
-        var coorX: Int = 0
+    def spawnCoor(s: String): (Int,Int) = {
+        val angle: Double = random.between(0, 2*math.Pi)
+        val smallRadius :Int = random.between(0,INTERNAL_RADIUS)
+        var x = 0
+        var y = 0
+
         s match {
-            case "H" => coorX = random.between(centerX - innerRad, centerX + innerRad)
+            case "H" =>
+                x = (smallRadius*math.cos(angle)).toInt + CENTER_X
+                y = (smallRadius*math.sin(angle)).toInt + CENTER_Y
+
             case "t" | "s" | "h" =>
-                do {
-                    coorX = random.between(0, centerX * 2)
-                }
-                while (coorX > centerX - 100 & coorX < centerX + 100)
-        }
-        return coorX
-    }
+                x = random.between(0, BOX_WIDTH)
+                y = random.between(0, BOX_HEIGHT)
 
-    def spawnCoorY(s: String): Int = {
-        val innerRad: Int = 50
-        var ausserRad: Int = 350
-        val centerY: Int = 500
-        var coorY: Int = 0
-        s match {
-            case "H" => coorY = random.between(centerY - innerRad, centerY + innerRad)
-            case "t"|"s"|"h" =>
-                do {
-                    coorY = random.between(0, centerY * 2)
+                // vérifier qui soient pas dans le cercle
+                val distanceToCenter = (math.sqrt(math.pow(CENTER_X - x, 2) + math.pow(CENTER_Y - y, 2))).toInt
+                val min: Int = EXTERNAL_RADIUS - distanceToCenter
+                if (distanceToCenter < EXTERNAL_RADIUS) {// séparation en fonction de l'endroit du point selon les 4 quarts d'un cercle :
+                    if(x > CENTER_X-EXTERNAL_RADIUS & x < CENTER_X){
+                        var toSubX = random.between(x - (CENTER_X - EXTERNAL_RADIUS), (x - (CENTER_X - EXTERNAL_RADIUS)) * 2)
+                        x -= toSubX
+                    }
+                    else if(x < CENTER_X+EXTERNAL_RADIUS & x > CENTER_X){
+                         var toAddX = random.between((CENTER_X+EXTERNAL_RADIUS)-x, ((CENTER_X+EXTERNAL_RADIUS)-x) * 2 )
+                        x += toAddX
+                    }
+                    if (y > CENTER_Y - EXTERNAL_RADIUS & y < CENTER_Y) {
+                       var toSubY = random.between(y - (CENTER_Y - EXTERNAL_RADIUS), (y -(CENTER_Y - EXTERNAL_RADIUS)) * 2)
+                        y -= toSubY
+                    }
+                    else if (y < CENTER_Y + EXTERNAL_RADIUS & y > CENTER_Y) {
+                         var toAddY = random.between((CENTER_Y+EXTERNAL_RADIUS)-y, ((CENTER_Y+EXTERNAL_RADIUS)-y)*2)
+                        y += toAddY
+                    }
                 }
-                while (coorY > centerY - 100 & coorY < centerY + 100)
-
         }
-        return coorY
+        var point = (x,y)
+        return point
     }
 
     def spawnTriangle(): Unit ={
-        println("triangle flag!")
-        val positiongX: Int = spawnCoorX("t")
-        val positiongY: Int = spawnCoorX("t")
-        var spawnPoint: Vector2 = new Vector2(positiongX,positiongY)
+        val newPoint: (Int, Int) = spawnCoor("t")
+        var spawnPoint: Vector2 = new Vector2(newPoint._1, newPoint._2)
         triangleStash.addOne(new trianglePellet(spawnPoint))
     }
 
     def spawnSquare(): Unit ={
-        println("square flag!")
-        val positiongX: Int = spawnCoorX("s")
-        val positiongY: Int = spawnCoorX("s")
-        var spawnPoint: Vector2 = new Vector2(positiongX, positiongY)
+        val newPoint: (Int, Int) = spawnCoor("s")
+        var spawnPoint: Vector2 = new Vector2(newPoint._1, newPoint._2)
         squareStash.addOne(new squarePellet(spawnPoint))
     }
 
     def spawnHexagon(): Unit ={
-        println("hexagon flag!")
-        val positiongX: Int = spawnCoorX("h")
-        val positiongY: Int = spawnCoorX("h")
-        var spawnPoint: Vector2 = new Vector2(positiongX, positiongY)
+        val newPoint: (Int, Int) = spawnCoor("h")
+        var spawnPoint: Vector2 = new Vector2(newPoint._1, newPoint._2)
         hexagonStash.addOne(new hexagonPellet(spawnPoint))
     }
 
     def spawnBigHexa(): Unit = {
-        println("bigHexa flag!")
-        val positiongX: Int = spawnCoorX("H")
-        val positiongY: Int = spawnCoorY("H")
-        var spawnPoint: Vector2 = new Vector2(positiongX, positiongY)
+        val newPoint: (Int, Int) = spawnCoor("H")
+        var spawnPoint: Vector2 = new Vector2(newPoint._1, newPoint._2)
         bigHexaStash.addOne(new bigHexaPellet(spawnPoint))
     }
 }

@@ -15,11 +15,10 @@ import exp.{PelletFactory, bigHexaPellet, hexagonPellet}
 
 
 /**
- * Hello World demo.
- *
+ * Hello World demo
  * @author Christopher Métrailler (mei)
  * @author Pierre-André Mudry (mui)
- * @version 2.1
+ *
  */
 object Main {
     def main(args: Array[String]): Unit = {

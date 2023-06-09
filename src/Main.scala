@@ -11,7 +11,7 @@ import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.desktop.PortableApplication
 import com.badlogic.gdx.math.{Vector2, Vector3}
 import com.badlogic.gdx.physics.box2d.World
-import exp.{PelletFactory, bigHexaPellet, hexagonPellet}
+import exp.PelletFactory
 
 import java.awt.MouseInfo.getPointerInfo
 

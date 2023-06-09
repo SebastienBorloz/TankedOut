@@ -53,8 +53,6 @@ class Main extends PortableApplication(2000, 1000) {
         // Create the obstacles in the scene
         new PhysicsScreenBoundaries(settings.BOX_WIDTH, settings.BOX_HEIGHT)
 
-        // Our car
-        //c1 = new Car(30, 70, new Vector2(200, 200), (float) Math.PI, 10, 30, 15);
         p1 = new Joueur(30, new Vector2(200, 200), 0)
         zoom = 2
 
@@ -62,6 +60,12 @@ class Main extends PortableApplication(2000, 1000) {
 
     override def onGraphicRender(g: GdxGraphics): Unit = {
         g.clear()
+        for(i <- settings.BOX_WIDTH/10 until settings.BOX_WIDTH by settings.BOX_WIDTH/10){
+            g.drawLine(i, 0, i, settings.BOX_HEIGHT, Color.DARK_GRAY)
+        }
+        for (i <- settings.BOX_WIDTH/10 until settings.BOX_HEIGHT by settings.BOX_WIDTH/10) {
+            g.drawLine(0, i, settings.BOX_WIDTH, i, Color.DARK_GRAY)
+        }
         //g.drawBackground(fong, 1, 1);
         // Physics update
         polyGen.pelletUpdate()

@@ -1,23 +1,24 @@
 package composants
 
 import ch.hevs.gdx2d.components.physics.primitives.PhysicsCircle
+import ch.hevs.gdx2d.lib.physics.AbstractPhysicsObject
 import com.badlogic.gdx.math.Vector2
 
-class Bullet(pvIn: Int, speedIn: Int, angleIn: Float, position: Vector2) {
+class Bullet(joueur: Joueur, pvIn: Int, speedIn: Int, angleIn: Float, position: Vector2) extends PhysicsCircle("Boulette", position, 10, 1, 1, 0) {
     val pvs: Int = pvIn
     val trueAngle: Float = (angleIn * math.Pi / 180).toFloat
 
-    val bulletBox = new PhysicsCircle("Boulette", position, 10, 1, 1, 0)
     if(angleIn > 180) {
-        bulletBox.setBodyLinearVelocity(speedIn * math.sin(trueAngle).toFloat, speedIn * math.cos(trueAngle).toFloat)
+        setBodyLinearVelocity(speedIn * math.sin(trueAngle).toFloat, speedIn * math.cos(trueAngle).toFloat)
     }else{
-        bulletBox.setBodyLinearVelocity(speedIn * math.sin(trueAngle).toFloat, -1 * speedIn * math.cos(trueAngle).toFloat)
+        setBodyLinearVelocity(speedIn * math.sin(trueAngle).toFloat, -1 * speedIn * math.cos(trueAngle).toFloat)
     }
-    val initVector: Float = bulletBox.getBodyAngularVelocity
-    //bulletBox.enableCollisionListener(Collisiong())
+    enableCollisionListener()
 
-
-    def Collisiong: Unit ={
-        bulletBox.destroy()
+    override def collision(theOtherObject: AbstractPhysicsObject, energy: Float): Unit = {
+        println(s"collision avec ${theOtherObject.toString}")
+        if(theOtherObject != joueur.playerBox){
+            destroy()
+        }
     }
 }

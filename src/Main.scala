@@ -97,7 +97,6 @@ class Main extends PortableApplication(2000, 1000) {
         val mouseY = Gdx.input.getY()
         val posMouse: Vector2 = new Vector2(mouseX.toFloat + 1, mouseY.toFloat + 1)
         val truePosMouse = g.getCamera.unproject(new Vector3(posMouse.x, posMouse.y, 0))
-        //val posP1: Vector2 = p1.playerBox.
         val angle: Float = p1.getAngle(new Vector2(truePosMouse.x,truePosMouse.y), p1.playerBox.getBodyPosition).toFloat
         p1.mouseAngle = angle
         if(angle < 180) {

@@ -95,22 +95,11 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
             val spawnPos: Vector2 = new Vector2(playerBox.getBodyPosition)
             spawnPos.x += 40 * math.sin(mouseAngle * math.Pi / 180).toFloat
             if(mouseAngle < 180) {
-                spawnPos.y -= 30 * math.cos(mouseAngle * math.Pi / 180).toFloat
+                spawnPos.y -= 50 * math.cos(mouseAngle * math.Pi / 180).toFloat
             }else{
-                spawnPos.y += 30 * math.cos(mouseAngle * math.Pi / 180).toFloat
+                spawnPos.y += 50 * math.cos(mouseAngle * math.Pi / 180).toFloat
             }
-            Boulettes.addOne(new Bullet(10, 10, mouseAngle, spawnPos))
-        }
-
-        try {
-            for (i <- Boulettes.indices) {
-                if (Boulettes(i).bulletBox.getBodyAngularVelocity != Boulettes(i).initVector) {
-                    Boulettes(i).Collisiong
-                    Boulettes.remove(i)
-                }
-            }
-        }catch{
-            case _ => println("cringe")
+            Boulettes.addOne(new Bullet(this,10, 10, mouseAngle, spawnPos))
         }
     }
 

@@ -107,9 +107,9 @@ class Main extends PortableApplication(2000, 1000) {
         val angle: Float = p1.getAngle(new Vector2(truePosMouse.x,truePosMouse.y), p1.playerBox.getBodyPosition).toFloat
         p1.mouseAngle = angle
         if(angle < 180) {
-            g.drawRectangle(p1.getPos.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, p1.getPos.y - 30 * math.cos(angle * math.Pi / 180.0).toFloat, 15, 30, angle)
+            g.drawFilledRectangle(p1.getPos.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, p1.getPos.y - 30 * math.cos(angle * math.Pi / 180.0).toFloat, 21, 33, angle, Color.DARK_GRAY)
         }else{
-            g.drawRectangle(p1.getPos.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, p1.getPos.y + 30 * math.cos(angle * math.Pi / 180.0).toFloat, 15, 30, 180 - angle)
+            g.drawFilledRectangle(p1.getPos.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, p1.getPos.y + 30 * math.cos(angle * math.Pi / 180.0).toFloat, 21, 33, 180 - angle, Color.DARK_GRAY)
         }
         g.drawFPS()
         g.drawSchoolLogo()

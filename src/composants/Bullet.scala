@@ -13,4 +13,11 @@ class Bullet(pvIn: Int, speedIn: Int, angleIn: Float, position: Vector2) {
     }else{
         bulletBox.setBodyLinearVelocity(speedIn * math.sin(trueAngle).toFloat, -1 * speedIn * math.cos(trueAngle).toFloat)
     }
+    val initVector: Float = bulletBox.getBodyAngularVelocity
+    //bulletBox.enableCollisionListener(Collisiong())
+
+
+    def Collisiong: Unit ={
+        bulletBox.destroy()
+    }
 }

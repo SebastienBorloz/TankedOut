@@ -10,18 +10,18 @@ import scala.io.AnsiColor._
 class PelletFactory {
     var triangleStash: ArrayBuffer[trianglePellet] = new ArrayBuffer[trianglePellet]()
     var squareStash: ArrayBuffer[squarePellet] = new ArrayBuffer[squarePellet]()
-    var hexagonStash: ArrayBuffer[hexagonPellet] = new ArrayBuffer[hexagonPellet]()
-    var bigHexaStash: ArrayBuffer[bigHexaPellet] = new ArrayBuffer[bigHexaPellet]()
+    var pentagonStash: ArrayBuffer[pentagonPellet] = new ArrayBuffer[pentagonPellet]()
+    var bigPentaStash: ArrayBuffer[bigPentaPellet] = new ArrayBuffer[bigPentaPellet]()
     /** valeurs du nombres maximum de chaque pellets */
     val NBR_TRIANGLES = 200
     val NBR_SQUARES = 100
     val NBR_HEXAGONS = 50
-    val NBR_BIGHEXAS = 6
+    val NBR_BIGPENTAS = 6
 
     var lastTriangle: Long = 0
     var lastSquare: Long = 0
-    var lastHexagon: Long = 0
-    var lastBigHexa: Long = 0
+    var lastPentagon: Long = 0
+    var lastBigPenta: Long = 0
 
     val INTERNAL_RADIUS: Int = 50
     var EXTERNAL_RADIUS: Int = 800
@@ -66,32 +66,32 @@ class PelletFactory {
         }
 
 
-        if(hexagonStash.length < NBR_HEXAGONS & gen >= NBR_HEXAGONS) {
-            if (System.currentTimeMillis() > lastHexagon + 10000) {
-                lastHexagon = System.currentTimeMillis()
-                spawnHexagon()
+        if(pentagonStash.length < NBR_HEXAGONS & gen >= NBR_HEXAGONS) {
+            if (System.currentTimeMillis() > lastPentagon + 10000) {
+              lastPentagon = System.currentTimeMillis()
+              spawnPentagon()
             }
         }
-        if (hexagonStash.length < NBR_HEXAGONS & gen < NBR_HEXAGONS) {
-            if (System.currentTimeMillis() > lastHexagon) {
-                lastHexagon = System.currentTimeMillis()
+        if (pentagonStash.length < NBR_HEXAGONS & gen < NBR_HEXAGONS) {
+            if (System.currentTimeMillis() > lastPentagon) {
+              lastPentagon = System.currentTimeMillis()
                 for (i <- 0 until NBR_HEXAGONS) {
-                    spawnHexagon()
+                  spawnPentagon()
                 }
             }
         }
 
-        if(bigHexaStash.length < NBR_BIGHEXAS & gen >= NBR_BIGHEXAS) {
-            if (System.currentTimeMillis() > lastBigHexa + 30000) {
-                lastBigHexa = System.currentTimeMillis()
-                spawnBigHexa()
+        if(bigPentaStash.length < NBR_BIGPENTAS & gen >= NBR_BIGPENTAS) {
+            if (System.currentTimeMillis() > lastBigPenta + 30000) {
+              lastBigPenta = System.currentTimeMillis()
+              spawnBigPenta()
             }
         }
-        else if(bigHexaStash.length < NBR_BIGHEXAS & gen < NBR_BIGHEXAS) {
-            if (System.currentTimeMillis() > lastBigHexa) {
-                lastBigHexa = System.currentTimeMillis()
-                for (i <- 0 until NBR_BIGHEXAS) {
-                    spawnBigHexa()
+        else if(bigPentaStash.length < NBR_BIGPENTAS & gen < NBR_BIGPENTAS) {
+            if (System.currentTimeMillis() > lastBigPenta) {
+                lastBigPenta = System.currentTimeMillis()
+                for (i <- 0 until NBR_BIGPENTAS) {
+                  spawnBigPenta()
                 }
             }
         }
@@ -152,15 +152,15 @@ class PelletFactory {
         squareStash.addOne(new squarePellet(spawnPoint))
     }
 
-    def spawnHexagon(): Unit ={
+    def spawnPentagon(): Unit ={
         val newPoint: (Int, Int) = spawnCoor("h")
         var spawnPoint: Vector2 = new Vector2(newPoint._1, newPoint._2)
-        hexagonStash.addOne(new hexagonPellet(spawnPoint))
+        pentagonStash.addOne(new pentagonPellet(spawnPoint))
     }
 
-    def spawnBigHexa(): Unit = {
+    def spawnBigPenta(): Unit = {
         val newPoint: (Int, Int) = spawnCoor("H")
         var spawnPoint: Vector2 = new Vector2(newPoint._1, newPoint._2)
-        bigHexaStash.addOne(new bigHexaPellet(spawnPoint))
+        bigPentaStash.addOne(new bigPentaPellet(spawnPoint))
     }
 }

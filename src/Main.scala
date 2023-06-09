@@ -9,17 +9,20 @@ import com.badlogic.gdx.Input
 import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.desktop.PortableApplication
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.{Vector2, Vector3}
 import com.badlogic.gdx.physics.box2d.World
 import exp.PelletFactory
+import setup.settings
+
 
 import java.awt.MouseInfo.getPointerInfo
 
 
 /**
- * Hello World demo
- * @author Christopher Métrailler (mei)
- * @author Pierre-André Mudry (mui)
+ * TankedOut
+ * @author Brocard Sébastien
+ * @author Duc Jeremy
  *
  */
 object Main {
@@ -48,7 +51,7 @@ class Main extends PortableApplication(2000, 1000) {
         dbgRenderer = new DebugRenderer
 
         // Create the obstacles in the scene
-        new PhysicsScreenBoundaries(getWindowWidth * 3, getWindowHeight * 3)
+        new PhysicsScreenBoundaries(settings.BOX_WIDTH, settings.BOX_HEIGHT)
 
         // Our car
         //c1 = new Car(30, 70, new Vector2(200, 200), (float) Math.PI, 10, 30, 15);

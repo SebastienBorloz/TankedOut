@@ -42,7 +42,7 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
 
     override def draw(g: GdxGraphics): Unit = {
         val pos = playerBox.getBodyPosition
-        g.drawFilledCircle(pos.x, pos.y, 10, Color.BLUE)
+        g.drawFilledCircle(pos.x, pos.y, 30, Color.FIREBRICK)
     }
 
     def getSpeedKMH: Float = {

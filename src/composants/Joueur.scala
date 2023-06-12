@@ -56,6 +56,7 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
     }
 
     def update(deltaTime: Float): Unit = { // update revolving wheels
+        println(Boulettes.length)
         var baseVector = new Vector2(0, 0)
         //playerBox.setBodyLinearVelocity(baseVector)
         // if accelerator is pressed down and speed limit has not been reached,
@@ -99,7 +100,7 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
             }else{
                 spawnPos.y += 50 * math.cos(mouseAngle * math.Pi / 180).toFloat
             }
-            Boulettes.addOne(new Bullet(this,10, 10, mouseAngle, spawnPos))
+            Boulettes.addOne(new Bullet(this.Boulettes,this,10, 10, mouseAngle, spawnPos))
         }
     }
 

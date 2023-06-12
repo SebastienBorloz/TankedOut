@@ -4,7 +4,9 @@ import ch.hevs.gdx2d.components.physics.primitives.PhysicsCircle
 import ch.hevs.gdx2d.lib.physics.AbstractPhysicsObject
 import com.badlogic.gdx.math.Vector2
 
-class Bullet(joueur: Joueur, pvIn: Int, speedIn: Int, angleIn: Float, position: Vector2) extends PhysicsCircle("Boulette", position, 10, 1, 1, 0) {
+import scala.collection.mutable.ArrayBuffer
+
+class Bullet(tab: ArrayBuffer[Bullet],joueur: Joueur, pvIn: Int, speedIn: Int, angleIn: Float, position: Vector2) extends PhysicsCircle("Boulette", position, 10, 1, 1, 0) {
     val pvs: Int = pvIn
     val trueAngle: Float = (angleIn * math.Pi / 180).toFloat
 
@@ -19,6 +21,7 @@ class Bullet(joueur: Joueur, pvIn: Int, speedIn: Int, angleIn: Float, position: 
         println(s"collision avec ${theOtherObject.toString}")
         if(theOtherObject != joueur.playerBox){
             destroy()
+            tab.subtractOne(this)
         }
     }
 }

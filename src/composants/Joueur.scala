@@ -56,11 +56,8 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
     }
 
     def update(deltaTime: Float): Unit = { // update revolving wheels
-        println(Boulettes.length)
+        //creation de la direction
         var baseVector = new Vector2(0, 0)
-        //playerBox.setBodyLinearVelocity(baseVector)
-        // if accelerator is pressed down and speed limit has not been reached,
-        // go forwards
         if (moveUp) {
             baseVector.y += 1
         }
@@ -74,23 +71,27 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
             baseVector.x += 1
         }
 
-        if (!moveUp && !moveDown && !moveLeft && !moveRight) { // slow down if not accelerating
+        //ralenti si aucun bouton est enclenché
+        if (!moveUp && !moveDown && !moveLeft && !moveRight) {
             baseVector = new Vector2(0, 0)
             baseVector = playerBox.getBodyLinearVelocity().scl(-0.75f)
         }
+        val forceVector = baseVector.scl(25) //multiplicateur vitesse
 
-        val forceVector = baseVector.scl(25)
+        //application de la force
         val position = playerBox.getBodyWorldCenter
-        val vTest: Vector2 = playerBox.getBodyWorldVector(new Vector2(baseVector.x, baseVector.y))
-        //Gdx.app.log("[Info debug]",s"UP: $moveUp, DOWN: $moveDown, LEFT: $moveLeft, RIGHT: $moveRight, Vecteur: ${vTest.toString}")
         playerBox.applyBodyForce(forceVector, position, true)
 
+
+        //limitation de vitesse
         val longActu: Float = playerBox.getBodyLinearVelocity.len()
         val vitesseLimite: Int = 15 * stats.movementSpeed
         if (longActu > vitesseLimite) {
             playerBox.setBodyLinearVelocity(playerBox.getBodyLinearVelocity.scl(vitesseLimite / longActu))
         }
 
+
+        //gestion des tirs
         if(shooting == true && shootingTemp < System.currentTimeMillis() - 1000/stats.reload){
             shootingTemp = System.currentTimeMillis()
             val spawnPos: Vector2 = new Vector2(playerBox.getBodyPosition)

@@ -8,13 +8,14 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
 import ch.hevs.gdx2d.lib.interfaces.DrawableObject
 import com.badlogic.gdx.{Gdx, Input}
+import exp.PelletFactory
 
 import java.awt.MouseInfo.getPointerInfo
 import java.util
 import scala.collection.mutable.ArrayBuffer
 
 
-class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends DrawableObject {
+class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector2, val angle: Float) extends DrawableObject {
     val playerBox = new PhysicsCircle("playerCenter", inPosition, ray, angle)
     playerBox.setCollisionGroup(-1)
     // Initialize canon

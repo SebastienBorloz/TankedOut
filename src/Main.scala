@@ -53,12 +53,13 @@ class Main extends PortableApplication(2000, 1000) {
         // Create the obstacles in the scene
         new PhysicsScreenBoundaries(settings.BOX_WIDTH, settings.BOX_HEIGHT)
 
-        p1 = new Joueur(30, new Vector2(200, 200), 0)
+        p1 = new Joueur(polyGen,30, new Vector2(200, 200), 0)
         zoom = 2
-
     }
 
     override def onGraphicRender(g: GdxGraphics): Unit = {
+        println(polyGen.triangleStash.length, polyGen.squareStash.length, polyGen.pentagonStash.length, polyGen.bigPentaStash.length)
+        val playerPosition = p1.getPos
         g.clear()
         for(i <- settings.BOX_WIDTH/10 until settings.BOX_WIDTH by settings.BOX_WIDTH/10){
             g.drawLine(i, 0, i, settings.BOX_HEIGHT, Color.DARK_GRAY)
@@ -66,14 +67,14 @@ class Main extends PortableApplication(2000, 1000) {
         for (i <- settings.BOX_WIDTH/10 until settings.BOX_HEIGHT by settings.BOX_WIDTH/10) {
             g.drawLine(0, i, settings.BOX_WIDTH, i, Color.DARK_GRAY)
         }
-        //g.drawString(p1.getPos.x + 50,p1.getPos.y + 50,p1.exp.toString)
+        g.drawString(playerPosition.x, playerPosition.y - 40, p1.exp.toString)
         //g.drawBackground(fong, 1, 1);
         // Physics update
         polyGen.pelletUpdate()
         PhysicsWorld.updatePhysics(Gdx.graphics.getDeltaTime)
         // Camera follows the hero
         g.zoom(zoom.toFloat)
-        g.moveCamera((p1.getPos.x - getWindowWidth / 2 * zoom).toFloat, (p1.getPos.y - getWindowHeight / 2 * zoom).toFloat)
+        g.moveCamera((playerPosition.x - getWindowWidth / 2 * zoom).toFloat, (playerPosition.y - getWindowHeight / 2 * zoom).toFloat)
         /**
          * Move the player according to key presses
          */
@@ -98,12 +99,12 @@ class Main extends PortableApplication(2000, 1000) {
         val mouseY = Gdx.input.getY()
         val posMouse: Vector2 = new Vector2(mouseX.toFloat + 1, mouseY.toFloat + 1)
         val truePosMouse = g.getCamera.unproject(new Vector3(posMouse.x, posMouse.y, 0))
-        val angle: Float = p1.getAngle(new Vector2(truePosMouse.x,truePosMouse.y), p1.playerBox.getBodyPosition).toFloat
+        val angle: Float = p1.getAngle(new Vector2(truePosMouse.x,truePosMouse.y), playerPosition).toFloat
         p1.mouseAngle = angle
         if(angle < 180) {
-            g.drawFilledRectangle(p1.getPos.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, p1.getPos.y - 30 * math.cos(angle * math.Pi / 180.0).toFloat, 21, 33, angle, Color.DARK_GRAY)
+            g.drawFilledRectangle(p1.getPos.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, playerPosition.y - 30 * math.cos(angle * math.Pi / 180.0).toFloat, 21, 33, angle, Color.DARK_GRAY)
         }else{
-            g.drawFilledRectangle(p1.getPos.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, p1.getPos.y + 30 * math.cos(angle * math.Pi / 180.0).toFloat, 21, 33, 180 - angle, Color.DARK_GRAY)
+            g.drawFilledRectangle(p1.getPos.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, playerPosition.y + 30 * math.cos(angle * math.Pi / 180.0).toFloat, 21, 33, 180 - angle, Color.DARK_GRAY)
         }
         g.drawFPS()
         g.drawSchoolLogo()

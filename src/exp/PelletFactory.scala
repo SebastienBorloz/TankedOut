@@ -101,7 +101,7 @@ class PelletFactory {
 
             case "t" | "s" | "h" =>
                 x = random.between(0, settings.BOX_WIDTH)
-                y = random.between(0, settings.BOX_HEIGHT)
+                y = random.between(0, settings.BOX_HEIGHT-1)
 
                 // vérifier qui soient pas dans le cercle
                 val distanceToCenter = (math.sqrt(math.pow(settings.CENTER_X - x, 2) + math.pow(settings.CENTER_Y - y, 2))).toInt

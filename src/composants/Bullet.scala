@@ -1,9 +1,9 @@
 package composants
 
-import ch.hevs.gdx2d.components.physics.primitives.PhysicsCircle
+import ch.hevs.gdx2d.components.physics.primitives.{PhysicsCircle, PhysicsStaticBox}
 import ch.hevs.gdx2d.lib.physics.AbstractPhysicsObject
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.MassData
+import com.badlogic.gdx.physics.box2d.{BodyDef, MassData}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -18,12 +18,21 @@ class Bullet(tab: ArrayBuffer[Bullet],joueur: Joueur, pvIn: Int, speedIn: Int, a
     enableCollisionListener()
 
     override def collision(theOtherObject: AbstractPhysicsObject, energy: Float): Unit = {
-        println(s"collision avec ${theOtherObject.toString}")
+        println(s"collision avec ${theOtherObject.toString} de type ${theOtherObject.getClass} (${})")
         if(theOtherObject != joueur.playerBox){
             destroy()
             tab.subtractOne(this)
         }
 
 
+
+        if(theOtherObject.getBody.getType != BodyDef.BodyType.StaticBody && theOtherObject != joueur.playerBox){
+            val gravitere = theOtherObject.getBody.getGravityScale
+            if(gravitere - pvIn < 0){
+                theOtherObject.destroy()
+            }else {
+                theOtherObject.getBody.setGravityScale(gravitere - pvIn)
+            }
+        }
     }
 }

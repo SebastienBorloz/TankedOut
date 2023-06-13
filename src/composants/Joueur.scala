@@ -29,6 +29,7 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
     var shooting = false
     var shootingTemp = 0L
     var mouseAngle: Float = 0
+    var exp: Int = 0
 
     def setSpeed(speed: Float): Unit = {
         /*   speed - speed in kilometers per hour   */

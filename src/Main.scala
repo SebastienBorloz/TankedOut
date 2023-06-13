@@ -66,6 +66,7 @@ class Main extends PortableApplication(2000, 1000) {
         for (i <- settings.BOX_WIDTH/10 until settings.BOX_HEIGHT by settings.BOX_WIDTH/10) {
             g.drawLine(0, i, settings.BOX_WIDTH, i, Color.DARK_GRAY)
         }
+        //g.drawString(p1.getPos.x + 50,p1.getPos.y + 50,p1.exp.toString)
         //g.drawBackground(fong, 1, 1);
         // Physics update
         polyGen.pelletUpdate()

@@ -28,7 +28,15 @@ class Bullet(tab: ArrayBuffer[Bullet],joueur: Joueur, pvIn: Int, speedIn: Int, a
 
         if(theOtherObject.getBody.getType != BodyDef.BodyType.StaticBody && theOtherObject != joueur.playerBox){
             val gravitere = theOtherObject.getBody.getGravityScale
+            println(theOtherObject.getBody.getMass.toInt)
             if(gravitere - pvIn < 0){
+                theOtherObject.getBody.getMass.toInt match{
+                    case 1 => joueur.exp += 5
+                    case 13 => joueur.exp += 20
+                    case 44 => joueur.exp += 100
+                    case 364 => joueur.exp += 250
+                }
+
                 theOtherObject.destroy()
             }else {
                 theOtherObject.getBody.setGravityScale(gravitere - pvIn)

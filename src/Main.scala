@@ -33,21 +33,16 @@ object Main {
 
 class Main extends PortableApplication(2000, 1000) {
     private var dbgRenderer: DebugRenderer = null
-    private var imgBitmap: BitmapImage = null
-    private var fong: BitmapImage = null
     private val world = PhysicsWorld.getInstance
     private var zoom = .0
     private var p1: Joueur = null
     private var polyGen: PelletFactory = new PelletFactory()
-    private var prevAuto: Boolean = true
 
 
     override def onInit(): Unit = { // No gravity in this world
         world.setGravity(new Vector2(0, 0))
         setTitle("Test map")
 
-        /*imgBitmap = new BitmapImage("data/images/hei-pi.png")
-        fong = new BitmapImage("data/images/sapm.png")*/
         dbgRenderer = new DebugRenderer
 
         // Create the obstacles in the scene
@@ -55,6 +50,7 @@ class Main extends PortableApplication(2000, 1000) {
 
         p1 = new Joueur(polyGen,30, new Vector2(200, 200), 0)
         zoom = 2
+        polyGen.pelletInit()
     }
 
     override def onGraphicRender(g: GdxGraphics): Unit = {

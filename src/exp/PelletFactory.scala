@@ -19,72 +19,42 @@ class PelletFactory {
     var lastPentagon: Long = 0
     var lastBigPenta: Long = 0
 
-    var gen: Int = 0
-
     def pelletUpdate(): Unit ={ // fonction de
         //pellet triangulaire
-        if(triangleStash.length < settings.NBR_TRIANGLES & gen >= settings.NBR_TRIANGLES) {
+        if(triangleStash.length < settings.NBR_TRIANGLES) {
             if (System.currentTimeMillis() > lastTriangle + 1000) {
                 lastTriangle = System.currentTimeMillis()
                 spawnTriangle()
             }
         }
-        if (triangleStash.length < settings.NBR_TRIANGLES & gen < settings.NBR_TRIANGLES) {
-            if (System.currentTimeMillis() > lastTriangle) {
-                lastTriangle = System.currentTimeMillis()
-                for(i <- 0 until settings.NBR_TRIANGLES){
-                    spawnTriangle()
-                }
-            }
-        }
 
-        if(squareStash.length < settings.NBR_SQUARES & gen >= settings.NBR_SQUARES) {
+        if(squareStash.length < settings.NBR_SQUARES) {
             if (System.currentTimeMillis() > lastSquare + 5000) {
                 lastSquare = System.currentTimeMillis()
                 spawnSquare()
-
-            }
-        }
-        if (squareStash.length < settings.NBR_SQUARES & gen < settings.NBR_SQUARES) {
-            if (System.currentTimeMillis() > lastSquare) {
-                lastSquare = System.currentTimeMillis()
-                for (i <- 0 until settings.NBR_SQUARES) {
-                    spawnSquare()
-                }
             }
         }
 
-
-        if(pentagonStash.length < settings.NBR_PENTAGONS & gen >= settings.NBR_PENTAGONS) {
+        if(pentagonStash.length < settings.NBR_PENTAGONS ) {
             if (System.currentTimeMillis() > lastPentagon + 10000) {
               lastPentagon = System.currentTimeMillis()
               spawnPentagon()
             }
         }
-        if (pentagonStash.length < settings.NBR_PENTAGONS & gen < settings.NBR_PENTAGONS) {
-            if (System.currentTimeMillis() > lastPentagon) {
-              lastPentagon = System.currentTimeMillis()
-                for (i <- 0 until settings.NBR_PENTAGONS) {
-                  spawnPentagon()
-                }
-            }
-        }
 
-        if(bigPentaStash.length < settings.NBR_BIGPENTAS & gen >= settings.NBR_BIGPENTAS) {
+        if(bigPentaStash.length < settings.NBR_BIGPENTAS) {
             if (System.currentTimeMillis() > lastBigPenta + 30000) {
               lastBigPenta = System.currentTimeMillis()
               spawnBigPenta()
             }
         }
-        else if(bigPentaStash.length < settings.NBR_BIGPENTAS & gen < settings.NBR_BIGPENTAS) {
-            if (System.currentTimeMillis() > lastBigPenta) {
-                lastBigPenta = System.currentTimeMillis()
-                for (i <- 0 until settings.NBR_BIGPENTAS) {
-                  spawnBigPenta()
-                }
-            }
-        }
-        gen += 1
+    }
+
+    def pelletInit(): Unit ={
+        for(i <- 0 until settings.NBR_TRIANGLES){spawnTriangle()}
+        for(i <- 0 until settings.NBR_SQUARES){spawnSquare()}
+        for(i <- 0 until settings.NBR_PENTAGONS){spawnPentagon()}
+        for(i <- 0 until settings.NBR_BIGPENTAS){spawnBigPenta()}
     }
 
     /** fonctions de génération des coordonées du point d'apparition des pellets */

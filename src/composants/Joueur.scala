@@ -27,8 +27,9 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
     var shooting = false
     var shootingTemp = 0L
     var mouseAngle: Float = 0
-    var scalar: Int = 25
+    var horses: Int = 25
     var exp: Int = 0
+    var rupteur: Int = 2
 
     def getPos: Vector2 = playerBox.getBodyPosition
 
@@ -62,7 +63,7 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
         if (moveRight) {
             baseVector.x += 1
         }
-        playerBox.applyBodyForce(baseVector.scl(scalar), playerBox.getBodyWorldCenter, true)
+        playerBox.applyBodyForce(baseVector.scl(horses), playerBox.getBodyWorldCenter, true)
 
         // Le joueur ralentit si aucune touche directionnelle n'est pressée
         if (!moveUp && !moveDown && !moveLeft && !moveRight) {
@@ -73,7 +74,7 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
 
         //limitation de vitesse
         val longActu: Float = playerBox.getBodyLinearVelocity.len()
-        val vitesseLimite: Int = 2 * stats.movementSpeed
+        val vitesseLimite: Int = rupteur * stats.movementSpeed
         if (longActu > vitesseLimite) {
             playerBox.setBodyLinearVelocity(playerBox.getBodyLinearVelocity.scl(vitesseLimite / longActu))
         }

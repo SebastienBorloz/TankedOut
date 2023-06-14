@@ -70,13 +70,14 @@ class PelletFactory {
                 y = (smallRadius*math.sin(angle)).toInt + settings.CENTER_Y
 
             case "t" | "s" | "h" =>
-                x = random.between(0, settings.BOX_WIDTH)
-                y = random.between(0, settings.BOX_HEIGHT-1)
+                x = random.between(0, settings.BOX_WIDTH-2)
+                y = random.between(0, settings.BOX_HEIGHT-2)
 
-                // vérifier qui soient pas dans le cercle
+                // vérifier qu'ils ne soient pas dans le cercle
                 val distanceToCenter = (math.sqrt(math.pow(settings.CENTER_X - x, 2) + math.pow(settings.CENTER_Y - y, 2))).toInt
                 val min: Int = settings.EXTERNAL_RADIUS - distanceToCenter
-                if (distanceToCenter < settings.EXTERNAL_RADIUS) {// séparation en fonction de l'endroit du point selon les 4 quarts d'un cercle :
+                if (distanceToCenter < settings.EXTERNAL_RADIUS) {
+                    // séparation en fonction de l'endroit du point selon les 4 quarts d'un cercle :
                     if(x > settings.CENTER_X-settings.EXTERNAL_RADIUS & x < settings.CENTER_X){
                         var toSubX = random.between(x - (settings.CENTER_X - settings.EXTERNAL_RADIUS), (x - (settings.CENTER_X - settings.EXTERNAL_RADIUS)) * 2)
                         x -= toSubX

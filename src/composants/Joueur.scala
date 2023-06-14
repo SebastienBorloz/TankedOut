@@ -1,15 +1,21 @@
 package composants
 
+import ch.hevs.gdx2d.components.physics.primitives.PhysicsBox
 import ch.hevs.gdx2d.components.physics.primitives.PhysicsCircle
+import ch.hevs.gdx2d.components.physics.utils.PhysicsConstants
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
 import ch.hevs.gdx2d.lib.interfaces.DrawableObject
-import exp.{Pellet, PelletFactory}
+import com.badlogic.gdx.{Gdx, Input}
+import exp.PelletFactory
 
+import java.awt.MouseInfo.getPointerInfo
+import java.util
 import scala.collection.mutable.ArrayBuffer
 
-class Joueur(val bouboules: PelletFactory, ray: Float, val inPosition: Vector2, val angle: Float) extends DrawableObject {
+
+class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector2, val angle: Float) extends DrawableObject {
     val playerBox = new PhysicsCircle("playerCenter", inPosition, ray, angle)
     playerBox.setCollisionGroup(-1)
     private val stats: statSheet = new statSheet(1, 1, 1, 1, 8, 1)
@@ -30,6 +36,7 @@ class Joueur(val bouboules: PelletFactory, ray: Float, val inPosition: Vector2, 
         val pos = playerBox.getBodyPosition
         g.drawFilledCircle(pos.x, pos.y, 30, Color.FIREBRICK)
     }
+
 
     /** Fonction de gestion des déplacements du joueur et des tirs*/
     def update(deltaTime: Float): Unit = {
@@ -63,7 +70,8 @@ class Joueur(val bouboules: PelletFactory, ray: Float, val inPosition: Vector2, 
         }
 
 
-        // Limitation de la vitesse maximum
+
+        //limitation de vitesse
         val longActu: Float = playerBox.getBodyLinearVelocity.len()
         val vitesseLimite: Int = 2 * stats.movementSpeed
         if (longActu > vitesseLimite) {
@@ -81,7 +89,6 @@ class Joueur(val bouboules: PelletFactory, ray: Float, val inPosition: Vector2, 
                 spawnPos.y += 50 * math.cos(mouseAngle * math.Pi / 180).toFloat
             }
             Boulettes.addOne(new Bullet(this.Boulettes,this,10, 10, mouseAngle, spawnPos))
-
         }
     }
     /** Fonction qui aligne le joueur en direction du curseur de la souris */

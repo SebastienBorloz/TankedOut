@@ -49,7 +49,7 @@ class Main extends PortableApplication(2000, 1000) {
     }
 
     override def onGraphicRender(g: GdxGraphics): Unit = {
-        println(polyGen.triangleStash.length, polyGen.squareStash.length, polyGen.pentagonStash.length, polyGen.bigPentaStash.length)
+        //println(polyGen.triangleStash.length, polyGen.squareStash.length, polyGen.pentagonStash.length, polyGen.bigPentaStash.length)
         val playerPosition = p1.getPos
         g.clear()
         for(i <- settings.BOX_WIDTH/10 until settings.BOX_WIDTH by settings.BOX_WIDTH/10){
@@ -83,7 +83,7 @@ class Main extends PortableApplication(2000, 1000) {
         if (Gdx.input.isKeyPressed(Input.Keys.E)) p1.playerBox.applyBodyAngularImpulse(0.5f,false)
 
         p1.update(Gdx.graphics.getDeltaTime)
-        //p1.draw(g)
+        p1.draw(g)
         dbgRenderer.render(world, g.getCamera.combined)
         val mouseX = Gdx.input.getX()
         val mouseY = Gdx.input.getY()
@@ -92,12 +92,25 @@ class Main extends PortableApplication(2000, 1000) {
         val angle: Float = p1.getAngle(new Vector2(truePosMouse.x,truePosMouse.y), playerPosition).toFloat
         p1.mouseAngle = angle
         if(angle < 180) {
-            g.drawFilledRectangle(p1.getPos.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, playerPosition.y - 30 * math.cos(angle * math.Pi / 180.0).toFloat, 21, 33, angle, Color.DARK_GRAY)
+            g.drawFilledRectangle(playerPosition.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, playerPosition.y - 30 * math.cos(angle * math.Pi / 180.0).toFloat, 21, 33, angle, Color.DARK_GRAY)
         }else{
-            g.drawFilledRectangle(p1.getPos.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, playerPosition.y + 30 * math.cos(angle * math.Pi / 180.0).toFloat, 21, 33, 180 - angle, Color.DARK_GRAY)
+            g.drawFilledRectangle(playerPosition.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, playerPosition.y + 30 * math.cos(angle * math.Pi / 180.0).toFloat, 21, 33, 180 - angle, Color.DARK_GRAY)
         }
-        //g.drawFPS()
-        //g.drawSchoolLogo()
+
+        //dessin hud level up
+        val posRefXp: Vector2 = new Vector2(playerPosition.x - 1750, playerPosition.y - 950)
+        g.drawRectangle(posRefXp.x, posRefXp.y, 400, 160, 0)
+        g.drawRectangle(posRefXp.x , posRefXp.y + 160, 400, 160, 0)
+        g.drawRectangle(posRefXp.x, posRefXp.y + 320, 400, 160, 0)
+        g.drawRectangle(posRefXp.x, posRefXp.y + 480, 400, 160, 0)
+        g.drawRectangle(posRefXp.x, posRefXp.y + 640, 400, 160, 0)
+        g.drawRectangle(posRefXp.x, posRefXp.y + 800, 400, 160, 0)
+
+
+
+
+        g.drawFPS()
+        g.drawSchoolLogo()
     }
 
     override def onClick(x: Int, y: Int, button: Int): Unit = {

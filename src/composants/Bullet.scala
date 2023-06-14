@@ -1,9 +1,10 @@
 package composants
 
-import ch.hevs.gdx2d.components.physics.primitives.PhysicsCircle
+import ch.hevs.gdx2d.components.physics.primitives.{PhysicsCircle, PhysicsStaticBox}
 import ch.hevs.gdx2d.lib.physics.AbstractPhysicsObject
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.MassData
+import com.badlogic.gdx.physics.box2d.{BodyDef, MassData}
+import exp.{bigPentaPellet, pentagonPellet, squarePellet, trianglePellet}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -18,12 +19,63 @@ class Bullet(tab: ArrayBuffer[Bullet],joueur: Joueur, pvIn: Int, speedIn: Int, a
     enableCollisionListener()
 
     override def collision(theOtherObject: AbstractPhysicsObject, energy: Float): Unit = {
-        println(s"collision avec ${theOtherObject.toString}")
+        println(s"collision avec ${theOtherObject.toString} de type ${theOtherObject.getClass} (${})")
         if(theOtherObject != joueur.playerBox){
             destroy()
             tab.subtractOne(this)
         }
 
 
+
+        if(theOtherObject.getBody.getType != BodyDef.BodyType.StaticBody && theOtherObject != joueur.playerBox){
+            val gravitere = theOtherObject.getBody.getGravityScale
+            println(theOtherObject.getBody.getMass.toInt)
+            if(gravitere - pvIn < 0){
+                theOtherObject.getBody.getMass.toInt match{
+                    case 1 =>
+                        joueur.exp += 5
+                        var savedI: trianglePellet = null
+                        for(i <- joueur.bouboules.triangleStash) {
+                            if (i.triangleBox.getBody == theOtherObject.getBody) {
+                                savedI = i
+                            }
+                        }
+                        theOtherObject.destroy()
+                        joueur.bouboules.triangleStash.subtractOne(savedI)
+                    case 13 =>
+                        var savedI: squarePellet = null
+                        joueur.exp += 20
+                        for (i <- joueur.bouboules.squareStash) {
+                            if (i.squareBox.getBody == theOtherObject.getBody) {
+                                savedI = i
+                            }
+                        }
+                        theOtherObject.destroy()
+                        joueur.bouboules.squareStash.subtractOne(savedI)
+                    case 44 =>
+                        var savedI: pentagonPellet = null
+                        joueur.exp += 100
+                        for (i <- joueur.bouboules.pentagonStash) {
+                            if (i.pentagonBox.getBody == theOtherObject.getBody) {
+                                savedI = i
+                            }
+                        }
+                        theOtherObject.destroy()
+                        joueur.bouboules.pentagonStash.subtractOne(savedI)
+                    case 364 =>
+                        var savedI: bigPentaPellet = null
+                        joueur.exp += 250
+                        for (i <- joueur.bouboules.bigPentaStash) {
+                            if (i.bigPentaBox.getBody == theOtherObject.getBody) {
+                                savedI = i
+                            }
+                        }
+                        theOtherObject.destroy()
+                        joueur.bouboules.bigPentaStash.subtractOne(savedI)
+                }
+            }else {
+                theOtherObject.getBody.setGravityScale(gravitere - pvIn)
+            }
+        }
     }
 }

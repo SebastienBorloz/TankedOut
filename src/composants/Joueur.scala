@@ -1,17 +1,28 @@
 package composants
 
+import ch.hevs.gdx2d.components.physics.primitives.PhysicsBox
 import ch.hevs.gdx2d.components.physics.primitives.PhysicsCircle
+import ch.hevs.gdx2d.components.physics.utils.PhysicsConstants
 import ch.hevs.gdx2d.lib.GdxGraphics
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
 import ch.hevs.gdx2d.lib.interfaces.DrawableObject
+import com.badlogic.gdx.{Gdx, Input}
+import exp.PelletFactory
+
+import java.awt.MouseInfo.getPointerInfo
+import java.util
 import scala.collection.mutable.ArrayBuffer
 
-class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends DrawableObject {
+
+class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector2, val angle: Float) extends DrawableObject {
     val playerBox = new PhysicsCircle("playerCenter", inPosition, ray, angle)
     playerBox.setCollisionGroup(-1)
-    private val stats: statSheet = new statSheet(1, 1, 1, 1, 1, 1, 8, 1)
+    // Initialize canon
+    //this.canon = new Canon(this, playerBox.getBodyPosition, 50, 20)
+    private val stats: statSheet = new statSheet(1, 1, 1, 1 , 8, 1)
     var Boulettes: ArrayBuffer[Bullet] = new ArrayBuffer[Bullet]()
+    //protected var canon: Canon = null
     var moveRight = false
     var moveLeft = false
     var moveUp = false
@@ -19,6 +30,15 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
     var shooting = false
     var shootingTemp = 0L
     var mouseAngle: Float = 0
+    var exp: Int = 0
+
+    def setSpeed(speed: Float): Unit = {
+        /*   speed - speed in kilometers per hour   */
+        var velocity = playerBox.getBodyLinearVelocity
+        velocity = velocity.nor
+        velocity = new Vector2(velocity.x * ((speed * 1000.0f) / 3600.0f), velocity.y * ((speed * 1000.0f) / 3600.0f))
+        playerBox.setBodyLinearVelocity(velocity)
+    }
 
     def getPos: Vector2 = playerBox.getBodyPosition
 
@@ -27,10 +47,18 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
         g.drawFilledCircle(pos.x, pos.y, 30, Color.FIREBRICK)
     }
 
-    /** Fonction de gestion des déplacements du joueur et des tirs*/
-    def update(deltaTime: Float): Unit = {
+    def getSpeedKMH: Float = {
+        val velocity = playerBox.getBodyLinearVelocity
+        val len = velocity.len
+        (len / 1000) * 3600
+    }
 
-        // 1.Création de la direction
+    def getLocalVelocity: Vector2 = {
+        playerBox.getBody.getLocalVector(playerBox.getBody.getLinearVelocityFromLocalPoint(new Vector2(0, 0)))
+    }
+
+    def update(deltaTime: Float): Unit = { // update revolving wheels
+        //creation de la direction
         var baseVector = new Vector2(0, 0)
         if (moveUp) {
             baseVector.y += 1
@@ -45,30 +73,28 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
             baseVector.x += 1
         }
 
-        // 2.Le joueur ralentit si aucune touche directionnelle n'est pressée
-        if (!moveUp && !moveDown && !moveLeft && !moveRight && !shooting) {
+        //ralenti si aucun bouton est enclenché
+        if (!moveUp && !moveDown && !moveLeft && !moveRight) {
             baseVector = new Vector2(0, 0)
-            baseVector = playerBox.getBodyLinearVelocity().scl(-0.85f)
+            baseVector = playerBox.getBodyLinearVelocity().scl(-0.75f)
         }
+        val forceVector = baseVector.scl(25) //multiplicateur vitesse
 
-        // 3.Création et application d'un vecteur de force
-        val forceVector = baseVector.scl(15)
+        //application de la force
         val position = playerBox.getBodyWorldCenter
         playerBox.applyBodyForce(forceVector, position, true)
 
 
-        // 4.Limitation de la vitesse maximum
+        //limitation de vitesse
         val longActu: Float = playerBox.getBodyLinearVelocity.len()
-        val vitesseLimite: Int = 10 * stats.movementSpeed
+        val vitesseLimite: Int = 15 * stats.movementSpeed
         if (longActu > vitesseLimite) {
             playerBox.setBodyLinearVelocity(playerBox.getBodyLinearVelocity.scl(vitesseLimite / longActu))
         }
 
-        // 5.Gestion du décalage arrière en cas de tirs
 
-
-        // 6.Gestion des tirs
-        if(shooting && shootingTemp < System.currentTimeMillis() - 1000/stats.reload){
+        //gestion des tirs
+        if(shooting == true && shootingTemp < System.currentTimeMillis() - 1000/stats.reload){
             shootingTemp = System.currentTimeMillis()
             val spawnPos: Vector2 = new Vector2(playerBox.getBodyPosition)
             spawnPos.x += 40 * math.sin(mouseAngle * math.Pi / 180).toFloat
@@ -78,13 +104,9 @@ class Joueur(val ray: Float, val inPosition: Vector2, val angle: Float) extends 
                 spawnPos.y += 50 * math.cos(mouseAngle * math.Pi / 180).toFloat
             }
             Boulettes.addOne(new Bullet(this.Boulettes,this,10, 10, mouseAngle, spawnPos))
-            val backVector = baseVector.scl(-5)
-            val positionV = playerBox.getBodyWorldCenter
-            playerBox.applyBodyForce(backVector, positionV, true)
-
         }
     }
-    /** Fonction qui aligne le joueur en direction du curseur de la souris */
+
     def getAngle(v1: Vector2, v2: Vector2): Double = {
         val vInt1: Vector2 = if (v1.x > v2.x) {
             new Vector2(v2.x - v1.x, v2.y - v1.y)

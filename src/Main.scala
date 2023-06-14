@@ -1,22 +1,17 @@
 package ch.hevs.gdx2d
 
 import composants.Joueur
-import ch.hevs.gdx2d.components.physics.utils.{PhysicsConstants, PhysicsScreenBoundaries}
+import ch.hevs.gdx2d.components.physics.utils.PhysicsScreenBoundaries
 import ch.hevs.gdx2d.desktop.physics.DebugRenderer
 import ch.hevs.gdx2d.lib.physics.PhysicsWorld
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.desktop.PortableApplication
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.{Vector2, Vector3}
-import com.badlogic.gdx.physics.box2d.World
 import exp.PelletFactory
 import setup.settings
-
-
-import java.awt.MouseInfo.getPointerInfo
 
 
 /**
@@ -64,7 +59,6 @@ class Main extends PortableApplication(2000, 1000) {
             g.drawLine(0, i, settings.BOX_WIDTH, i, Color.DARK_GRAY)
         }
         g.drawString(playerPosition.x, playerPosition.y - 40, p1.exp.toString)
-        //g.drawBackground(fong, 1, 1);
         // Physics update
         polyGen.pelletUpdate()
         PhysicsWorld.updatePhysics(Gdx.graphics.getDeltaTime)

@@ -20,7 +20,7 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
     playerBox.setCollisionGroup(-1)
     // Initialize canon
     //this.canon = new Canon(this, playerBox.getBodyPosition, 50, 20)
-    private val stats: statSheet = new statSheet(1, 1, 1, 1, 1, 1, 8, 1)
+    private val stats: statSheet = new statSheet(1, 1, 1, 1 , 8, 1)
     var Boulettes: ArrayBuffer[Bullet] = new ArrayBuffer[Bullet]()
     //protected var canon: Canon = null
     var moveRight = false

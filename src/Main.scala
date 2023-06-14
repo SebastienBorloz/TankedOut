@@ -83,7 +83,7 @@ class Main extends PortableApplication(2000, 1000) {
         if (Gdx.input.isKeyPressed(Input.Keys.E)) p1.playerBox.applyBodyAngularImpulse(0.5f,false)
 
         p1.update(Gdx.graphics.getDeltaTime)
-        p1.draw(g)
+        //p1.draw(g)
         dbgRenderer.render(world, g.getCamera.combined)
         val mouseX = Gdx.input.getX()
         val mouseY = Gdx.input.getY()
@@ -96,8 +96,8 @@ class Main extends PortableApplication(2000, 1000) {
         }else{
             g.drawFilledRectangle(p1.getPos.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, playerPosition.y + 30 * math.cos(angle * math.Pi / 180.0).toFloat, 21, 33, 180 - angle, Color.DARK_GRAY)
         }
-        g.drawFPS()
-        g.drawSchoolLogo()
+        //g.drawFPS()
+        //g.drawSchoolLogo()
     }
 
     override def onClick(x: Int, y: Int, button: Int): Unit = {

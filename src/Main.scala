@@ -1,6 +1,7 @@
 package ch.hevs.gdx2d
 
-import composants.Joueur
+import ch.hevs.gdx2d.Main.main
+import composants.{Bot, Joueur}
 import ch.hevs.gdx2d.components.physics.utils.PhysicsScreenBoundaries
 import ch.hevs.gdx2d.desktop.physics.DebugRenderer
 import ch.hevs.gdx2d.lib.physics.PhysicsWorld
@@ -14,8 +15,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.badlogic.gdx.math.{Vector2, Vector3}
+import com.badlogic.gdx.physics.box2d.Body
 import exp.PelletFactory
 import setup.settings
+
+import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
 
 
 /**
@@ -35,6 +40,7 @@ class Main extends PortableApplication(2000, 1000) {
     private val world = PhysicsWorld.getInstance
     private var zoom = .0
     private var p1: Joueur = null
+    private var b1: Bot = null
     private var polyGen: PelletFactory = new PelletFactory()
     private var prevParam: Int = 0
     private var policeTextes: BitmapFont = null
@@ -50,9 +56,11 @@ class Main extends PortableApplication(2000, 1000) {
         new PhysicsScreenBoundaries(settings.BOX_WIDTH, settings.BOX_HEIGHT)
 
         p1 = new Joueur(polyGen,30, new Vector2(200, 200), 0)
+        b1 = new Bot(polyGen,30, new Vector2(300,300),0)
         zoom = 2
         polyGen.pelletInit()
     }
+
 
     override def onGraphicRender(g: GdxGraphics): Unit = {
 
@@ -62,6 +70,8 @@ class Main extends PortableApplication(2000, 1000) {
 
         // mise a jour des pellets
         polyGen.pelletUpdate()
+        PhysicsWorld.updatePhysics(Gdx.graphics.getDeltaTime)
+        // la caméra suit le joueur
 
         // obtention de la position du joueur 1 et centrage de la camera sur lui
         val playerPosition = p1.getPos
@@ -96,6 +106,7 @@ class Main extends PortableApplication(2000, 1000) {
         //mise a jour du joueur et affichage. DEBUG OPTION: on affiche egalement son xp
         p1.update(Gdx.graphics.getDeltaTime)
         p1.draw(g)
+        b1.draw(g)
         dbgRenderer.render(world, g.getCamera.combined)
         g.drawString(playerPosition.x, playerPosition.y - 40, p1.exp.toString)
 
@@ -150,6 +161,15 @@ class Main extends PortableApplication(2000, 1000) {
                 released = true
             }
 
+        /** zone de searching and acquiring target pour le bot */
+        var bodies = new com.badlogic.gdx.utils.Array[Body]
+        var botDestination: Vector2 = new Vector2(0,0)
+            world.getBodies(bodies)
+        for (i <- bodies.toArray) {
+            botDestination = b1.getNearestObject(i)
+        }
+        val direction = b1.getDirection(botDestination, b1.getPos)
+        b1.move(b1, b1.getPos, botDestination, direction)
             //------------- dessin hud level up -------------
 
             //calcule la position du coin de l'ecran par rapport au joueur

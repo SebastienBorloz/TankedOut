@@ -1,6 +1,7 @@
 package ch.hevs.gdx2d
 
 import ch.hevs.gdx2d.Main.main
+import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import composants.{Bot, Joueur}
 import ch.hevs.gdx2d.components.physics.utils.PhysicsScreenBoundaries
 import ch.hevs.gdx2d.desktop.physics.DebugRenderer
@@ -48,25 +49,26 @@ class Main extends PortableApplication(2000, 1000) {
 
     override def onInit(): Unit = { // No gravity in this world
         world.setGravity(new Vector2(0, 0))
-        setTitle("Test map")
+        setTitle("Tanked Out")
+
+
 
         dbgRenderer = new DebugRenderer
-
         // Create the obstacles in the scene
         new PhysicsScreenBoundaries(settings.BOX_WIDTH, settings.BOX_HEIGHT)
 
         p1 = new Joueur(polyGen,30, new Vector2(200, 200), 0)
-        b1 = new Bot(polyGen,30, new Vector2(300,300),0)
+        //b1 = new Bot(polyGen,30, new Vector2(300,300),0)
         zoom = 2
         polyGen.pelletInit()
     }
 
 
     override def onGraphicRender(g: GdxGraphics): Unit = {
-
-        if (Gdx.input.isKeyPressed(Input.Keys.G)) {
-            p1.classy.playerClass = p1.classy.Sniper
-        }
+        if (Gdx.input.isKeyPressed(Input.Keys.G)) {p1.classy.playerClass = p1.classy.Sniper}
+        if (Gdx.input.isKeyPressed(Input.Keys.H)) {p1.classy.playerClass = p1.classy.Canon}
+        if (Gdx.input.isKeyPressed(Input.Keys.J)) {p1.classy.playerClass = p1.classy.Doduble}
+        if (Gdx.input.isKeyPressed(Input.Keys.K)) {p1.classy.playerClass = p1.classy.MG}
 
         // mise a jour des pellets
         polyGen.pelletUpdate()
@@ -106,7 +108,7 @@ class Main extends PortableApplication(2000, 1000) {
         //mise a jour du joueur et affichage. DEBUG OPTION: on affiche egalement son xp
         p1.update(Gdx.graphics.getDeltaTime)
         p1.draw(g)
-        b1.draw(g)
+        //b1.draw(g)
         dbgRenderer.render(world, g.getCamera.combined)
         g.drawString(playerPosition.x, playerPosition.y - 40, p1.exp.toString)
 
@@ -162,14 +164,14 @@ class Main extends PortableApplication(2000, 1000) {
             }
 
         /** zone de searching and acquiring target pour le bot */
-        var bodies = new com.badlogic.gdx.utils.Array[Body]
+        /*var bodies = new com.badlogic.gdx.utils.Array[Body]
         var botDestination: Vector2 = new Vector2(0,0)
             world.getBodies(bodies)
         for (i <- bodies.toArray) {
             botDestination = b1.getNearestObject(i)
         }
         val direction = b1.getDirection(botDestination, b1.getPos)
-        b1.move(b1, b1.getPos, botDestination, direction)
+        b1.move(b1, b1.getPos, botDestination, direction)*/
             //------------- dessin hud level up -------------
 
             //calcule la position du coin de l'ecran par rapport au joueur
@@ -180,7 +182,7 @@ class Main extends PortableApplication(2000, 1000) {
             }
 
             //cree un tableau des couleurs et des stats pour les afficher dans l'ordre facilement
-            val colorTab: Array[Color] = Array(Color.FOREST, Color.GOLD, Color.CYAN, Color.YELLOW, Color.RED, Color.PINK)
+            val colorTab: Array[Color] = Array(Color.FOREST, Color.GOLD, Color.VIOLET, Color.BLUE, Color.BROWN, Color.FIREBRICK)
             val playerStats: Array[Int] = Array(p1.stats.regen, p1.stats.maxHealth, p1.stats.bulletSpeed, p1.stats.bulletDamage, p1.stats.reload, p1.stats.movementSpeed)
             //affiche les stats dans leurs categories respectives avec des barres verticales (entre 1 et 8)
             for (j <- 0 to 5) {

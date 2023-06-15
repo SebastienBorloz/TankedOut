@@ -55,27 +55,19 @@ class Main extends PortableApplication(2000, 1000) {
     }
 
     override def onGraphicRender(g: GdxGraphics): Unit = {
-        g.clear()
-        val playerPosition = p1.getPos
-        for(i <- settings.BOX_WIDTH/10 until settings.BOX_WIDTH by settings.BOX_WIDTH/10){
-            g.drawLine(i, 0, i, settings.BOX_HEIGHT, Color.DARK_GRAY)
-        }
-        for (i <- settings.BOX_WIDTH/10 until settings.BOX_HEIGHT by settings.BOX_WIDTH/10) {
-            g.drawLine(0, i, settings.BOX_WIDTH, i, Color.DARK_GRAY)
-        }
-
-        // pellets update
+        // mise a jour des pellets
         polyGen.pelletUpdate()
 
-        // Camera follows the hero
+        // obtention de la position du joueur 1 et centrage de la camera sur lui
+        val playerPosition = p1.getPos
         g.zoom(zoom.toFloat)
         g.moveCamera((playerPosition.x - getWindowWidth / 2 * zoom).toFloat, (playerPosition.y - getWindowHeight / 2 * zoom).toFloat)
-        /**
-         * Move the player according to key presses
-         */
+
+        //DEBUG OPTION: gestion du zoom avec 'W' et 'S'
         if (Gdx.input.isKeyPressed(Input.Keys.W)) if (zoom > 0.2) zoom -= 0.1
         if (Gdx.input.isKeyPressed(Input.Keys.S)) if (zoom < 5) zoom += 0.1
 
+        //donne les flags au joueur si la croix directionnelle est touchee
         if (Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)) p1.moveUp = true
         else p1.moveUp = false
         if (Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)) p1.moveDown = true
@@ -85,14 +77,24 @@ class Main extends PortableApplication(2000, 1000) {
         if (Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)) p1.moveRight = true
         else p1.moveRight = false
 
-        if (Gdx.input.isKeyPressed(Input.Keys.E)) p1.playerBox.applyBodyAngularImpulse(0.5f,false)
 
+        //effacement complet de l'affichage
+        g.clear()
+
+        //commence par le grillage pour l'avoir au dernier plan
+        for (i <- settings.BOX_WIDTH/10 until settings.BOX_WIDTH by settings.BOX_WIDTH/10) {g.drawLine(i, 0, i, settings.BOX_HEIGHT, Color.DARK_GRAY)}
+        for (i <- settings.BOX_WIDTH/10 until settings.BOX_HEIGHT by settings.BOX_WIDTH/10) {g.drawLine(0, i, settings.BOX_WIDTH, i, Color.DARK_GRAY)}
+
+        //mise a jour du modele physique
         PhysicsWorld.updatePhysics(Gdx.graphics.getDeltaTime)
+
+        //mise a jour du joueur et affichage. DEBUG OPTION: on affiche egalement son xp
         p1.update(Gdx.graphics.getDeltaTime)
         p1.draw(g)
         dbgRenderer.render(world, g.getCamera.combined)
         g.drawString(playerPosition.x, playerPosition.y - 40, p1.exp.toString)
 
+        //obtention de la position de la souris et affichage du canon dans sa direction
         val mouseX = Gdx.input.getX()
         val mouseY = Gdx.input.getY()
         val posMouse: Vector2 = new Vector2(mouseX.toFloat + 1, mouseY.toFloat + 1)
@@ -106,55 +108,54 @@ class Main extends PortableApplication(2000, 1000) {
         }
 
 
+        //------------- gestion des levels up -------------
 
-        /*
-        * ------------------------------------------
-        *            gestion level up
-        * ------------------------------------------
-        */
-
+        //calcul des niveaux a depenser
         val lvlUtil: Int = p1.stats.regen + p1.stats.maxHealth + p1.stats.bulletSpeed + p1.stats.bulletDamage + p1.stats.reload + p1.stats.movementSpeed - 5
+
+        //si le joueur n'a pas tout depense
         if(lvlUtil != p1.getLevel()) {
-            if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)){
-                if(p1.stats.movementSpeed < 8 && released) {
+            if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)){ //si la touche 1 est enclenchee
+                if (p1.stats.movementSpeed < 8 && released) { //et que la stat n'a pas atteint son max
                     released = false
-                    p1.stats.movementSpeed += 1
+                    p1.stats.movementSpeed += 1 //augmente la vitesse de deplacement
                 }
-            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
-                if (p1.stats.reload < 8 && released) {
+
+            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)){ //si la touche 2 est enclenchee
+                if (p1.stats.reload < 8 && released) { //et que la stat n'a pas atteint son max
                     released = false
-                    p1.stats.reload += 1
+                    p1.stats.reload += 1 //augmente la vitesse de rechargement
                 }
-            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
-                if (p1.stats.bulletDamage < 8 && released) {
+
+            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)){ //si la touche 3 est enclenchee
+                if (p1.stats.bulletDamage < 8 && released) { //et que la stat n'a pas atteint son max
                     released = false
-                    p1.stats.bulletDamage += 1
+                    p1.stats.bulletDamage += 1 //augmente les degats des projectiles
                 }
-            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_4)) {
-                if (p1.stats.bulletSpeed < 8 && released) {
+
+            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_4)){ //si la touche 4 est enclenchee
+                if (p1.stats.bulletSpeed < 8 && released) { //et que la stat n'a pas atteint son max
                     released = false
-                    p1.stats.bulletSpeed += 1
+                    p1.stats.bulletSpeed += 1 //augmente la vitesse des projectiles
                 }
-            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_5)) {
-                if (p1.stats.maxHealth < 8 && released) {
+
+            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_5)){ //si la touche 5 est enclenchee
+                if (p1.stats.maxHealth < 8 && released) { //et que la stat n'a pas atteint son max
                     released = false
-                    p1.stats.maxHealth += 1
+                    p1.stats.maxHealth += 1 //augmente les points de vie max
                 }
-            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_6)) {
-                if (p1.stats.regen < 8 && released) {
+
+            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_6)){ //si la touche 6 est enclenchee
+                if (p1.stats.regen < 8 && released) { //et que la stat n'a pas atteint son max
                     released = false
-                    p1.stats.regen += 1
+                    p1.stats.regen += 1 //augmente la regeneration de points de vie
                 }
             } else {
+                //gestion bizarre pour que tout les niveaux partent pas d'un coup en pressant une touche une fois
                 released = true
             }
 
-
-            /*
-            * ------------------------------------------
-            *           dessin hud level up
-            * ------------------------------------------
-            */
+            //------------- dessin hud level up -------------
 
             //calcule la position du coin de l'ecran par rapport au joueur
             val posRefXp: Vector2 = new Vector2(playerPosition.x - 800 * zoom.toFloat, playerPosition.y - 400 * zoom.toFloat)
@@ -191,12 +192,7 @@ class Main extends PortableApplication(2000, 1000) {
             }
         }
 
-        /*
-        * ------------------------------------------
-        *       dessin FPS et logo de l'ecole
-        * ------------------------------------------
-        */
-
+        //dessin FPS et logo de l'ecole
         g.drawFPS()
         g.drawSchoolLogo()
     }

@@ -15,9 +15,9 @@ import java.util
 import scala.collection.mutable.ArrayBuffer
 
 
-class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector2, val angle: Float) extends DrawableObject {
-    val playerBox = new PhysicsCircle("playerCenter", inPosition, ray, angle)
-    playerBox.setCollisionGroup(-1)
+class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector2, val angle: Float) extends PhysicsCircle("playerCenter", inPosition, ray, angle) with DrawableObject {
+    
+    this.setCollisionGroup(-1)
     val stats: statSheet = new statSheet()
     var Boulettes: ArrayBuffer[Bullet] = new ArrayBuffer[Bullet]()
     var moveRight = false
@@ -32,21 +32,21 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
     var rupteur: Int = 2
     var classy: gestionDeClasses = new gestionDeClasses
 
-    def getPos: Vector2 = playerBox.getBodyPosition
+    def getPos: Vector2 = this.getBodyPosition
 
     override def draw(g: GdxGraphics): Unit = {
-        val pos = playerBox.getBodyPosition
+        val pos = this.getBodyPosition
         g.drawFilledCircle(pos.x, pos.y, 30, Color.FIREBRICK)
     }
 
 
     /** Fonction de gestion des déplacements du joueur et des tirs*/
     def update(deltaTime: Float): Unit = {
-        playerBox.isBodyFixedRotation
+        this.isBodyFixedRotation
 
         // Création de la direction
         var baseVector = new Vector2(0, 0)
-        val position = playerBox.getBodyWorldCenter
+        val position = this.getBodyWorldCenter
 
         /** déplacement vertical haut */
         if (moveUp) {
@@ -64,20 +64,20 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
         if (moveRight) {
             baseVector.x += 1
         }
-        playerBox.applyBodyForce(baseVector.scl(horses), playerBox.getBodyWorldCenter, true)
+        this.applyBodyForce(baseVector.scl(horses), this.getBodyWorldCenter, true)
 
         // Le joueur ralentit si aucune touche directionnelle n'est pressée
         if (!moveUp && !moveDown && !moveLeft && !moveRight) {
-            playerBox.applyBodyForce(playerBox.getBodyLinearVelocity().scl(-10), playerBox.getBodyWorldCenter, true)
+            this.applyBodyForce(this.getBodyLinearVelocity().scl(-10), this.getBodyWorldCenter, true)
         }
 
 
 
         //limitation de vitesse
-        val longActu: Float = playerBox.getBodyLinearVelocity.len()
+        val longActu: Float = this.getBodyLinearVelocity.len()
         val vitesseLimite: Int = rupteur * stats.movementSpeed
         if (longActu > vitesseLimite) {
-            playerBox.setBodyLinearVelocity(playerBox.getBodyLinearVelocity.scl(vitesseLimite / longActu))
+            this.setBodyLinearVelocity(this.getBodyLinearVelocity.scl(vitesseLimite / longActu))
         }
 
         // Gestion des tirs

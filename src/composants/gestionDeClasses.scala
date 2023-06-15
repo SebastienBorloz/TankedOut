@@ -13,11 +13,10 @@ class gestionDeClasses extends Enumeration{
     var playerClass: gestionDeClasses#Value = Base
     val tonkBitmap = new BitmapImage("data/images/tonk.png")
 
-
     def Shooting(mouseAngle: Float, joueur: Joueur): Unit ={
         playerClass match{
             case Base =>
-                val spawnPos: Vector2 = new Vector2(joueur.playerBox.getBodyPosition)
+                val spawnPos: Vector2 = new Vector2(joueur.getBodyPosition)
                 spawnPos.x += 60 * math.sin(mouseAngle * math.Pi / 180).toFloat
                 if (mouseAngle < 180) {
                   spawnPos.y -= 60 * math.cos(mouseAngle * math.Pi / 180).toFloat
@@ -64,7 +63,6 @@ class gestionDeClasses extends Enumeration{
                 joueur.Boulettes.addOne(new Bullet(joueur.Boulettes, joueur, 10 + joueur.stats.bulletDamage * 5, 5 + joueur.stats.bulletSpeed * 2, mouseAngle, spawnPos, 18))
         }
     }
-
 
     def Render(p1: Joueur, playerPosition:Vector2, g: GdxGraphics): Unit ={
         playerClass match{

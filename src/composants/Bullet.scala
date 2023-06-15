@@ -19,12 +19,12 @@ class Bullet(tab: ArrayBuffer[Bullet], joueur: Joueur, damage: Int, speedIn: Int
     enableCollisionListener()
 
     override def collision(theOtherObject: AbstractPhysicsObject, energy: Float): Unit = {
-        if(theOtherObject != joueur.playerBox){
+        if(theOtherObject != joueur){
             destroy()
             tab.subtractOne(this)
         }
 
-        if(theOtherObject.getBody.getType != BodyDef.BodyType.StaticBody && theOtherObject != joueur.playerBox){
+        if(theOtherObject.getBody.getType != BodyDef.BodyType.StaticBody && theOtherObject != joueur){
             val gravitere = theOtherObject.getBody.getGravityScale
             if(gravitere - damage < 0){
                 theOtherObject.getBody.getMass.toInt match{

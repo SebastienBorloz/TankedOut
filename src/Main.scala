@@ -16,7 +16,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.badlogic.gdx.math.{Vector2, Vector3}
-import com.badlogic.gdx.physics.box2d.Body
+import com.badlogic.gdx.physics.box2d.{Body, BodyDef}
 import exp.PelletFactory
 import setup.settings
 
@@ -54,11 +54,12 @@ class Main extends PortableApplication(2000, 1000) {
 
 
         dbgRenderer = new DebugRenderer
+
         // Create the obstacles in the scene
         new PhysicsScreenBoundaries(settings.BOX_WIDTH, settings.BOX_HEIGHT)
 
         p1 = new Joueur(polyGen,30, new Vector2(200, 200), 0)
-        //b1 = new Bot(polyGen,30, new Vector2(300,300),0)
+        b1 = new Bot(polyGen,30, new Vector2(300,300),0)
         zoom = 2
         polyGen.pelletInit()
     }
@@ -108,7 +109,7 @@ class Main extends PortableApplication(2000, 1000) {
         //mise a jour du joueur et affichage. DEBUG OPTION: on affiche egalement son xp
         p1.update(Gdx.graphics.getDeltaTime)
         p1.draw(g)
-        //b1.draw(g)
+        b1.draw(g)
         dbgRenderer.render(world, g.getCamera.combined)
         g.drawString(playerPosition.x, playerPosition.y - 40, p1.exp.toString)
 
@@ -163,15 +164,6 @@ class Main extends PortableApplication(2000, 1000) {
                 released = true
             }
 
-        /** zone de searching and acquiring target pour le bot */
-        /*var bodies = new com.badlogic.gdx.utils.Array[Body]
-        var botDestination: Vector2 = new Vector2(0,0)
-            world.getBodies(bodies)
-        for (i <- bodies.toArray) {
-            botDestination = b1.getNearestObject(i)
-        }
-        val direction = b1.getDirection(botDestination, b1.getPos)
-        b1.move(b1, b1.getPos, botDestination, direction)*/
             //------------- dessin hud level up -------------
 
             //calcule la position du coin de l'ecran par rapport au joueur
@@ -209,14 +201,19 @@ class Main extends PortableApplication(2000, 1000) {
             }
         }
         /** zone de searching and acquiring target pour le bot */
-        var bodies = new com.badlogic.gdx.utils.Array[Body]
-        var botDestination: Vector2 = new Vector2(0, 0)
+        val bodies = new com.badlogic.gdx.utils.Array[Body]
         world.getBodies(bodies)
-        for (i <- bodies.toArray) {
-            botDestination = b1.getNearestObject(i)
+        for(i<-bodies.toArray){
+            if(i.getType != BodyDef.BodyType.StaticBody){
+
+                println(i)
+            }
+
         }
+        val botDestination: Vector2 = b1.getNearestObject(bodies)
+
         val direction = b1.getDirection(botDestination, b1.getPos)
-        b1.move(b1, b1.getPos, botDestination, direction)
+        b1.move(b1, botDestination, direction)
         //dessin FPS et logo de l'ecole
         g.drawFPS()
         g.drawSchoolLogo()

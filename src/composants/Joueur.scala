@@ -18,7 +18,7 @@ import scala.collection.mutable.ArrayBuffer
 class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector2, val angle: Float) extends DrawableObject {
     val playerBox = new PhysicsCircle("playerCenter", inPosition, ray, angle)
     playerBox.setCollisionGroup(-1)
-    val stats: statSheet = new statSheet(1, 1, 1, 1, 8, 1)
+    val stats: statSheet = new statSheet(1, 1, 1, 1, 1, 1)
     var Boulettes: ArrayBuffer[Bullet] = new ArrayBuffer[Bullet]()
     var moveRight = false
     var moveLeft = false
@@ -29,7 +29,6 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
     var mouseAngle: Float = 0
     var horses: Int = 25
     var exp: Int = 0
-    var lvl: Int = 1
     var rupteur: Int = 2
 
     def getPos: Vector2 = playerBox.getBodyPosition
@@ -90,7 +89,7 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
             }else{
                 spawnPos.y += 60 * math.cos(mouseAngle * math.Pi / 180).toFloat
             }
-            Boulettes.addOne(new Bullet(this.Boulettes,this,10, 10, mouseAngle, spawnPos))
+            Boulettes.addOne(new Bullet(this.Boulettes,this, stats.bulletDamage * 10, stats.bulletSpeed * 10, mouseAngle, spawnPos))
         }
     }
     /** Fonction qui aligne le joueur en direction du curseur de la souris */
@@ -111,5 +110,14 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
         } else {
             360 - math.acos(dessus / dessous) * 180.0 / math.Pi
         }
+    }
+
+    def getLevel(): Int = {
+        for(i <- setup.settings.LEVEL_UPS.indices){
+            if(exp < setup.settings.LEVEL_UPS(i)){
+                return i + 1
+            }
+        }
+        return setup.settings.NIV_MAX
     }
 }

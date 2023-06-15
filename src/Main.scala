@@ -38,6 +38,7 @@ class Main extends PortableApplication(2000, 1000) {
     private var polyGen: PelletFactory = new PelletFactory()
     private var prevParam: Int = 0
     private var policeTextes: BitmapFont = null
+    private var released: Boolean = true
 
     override def onInit(): Unit = { // No gravity in this world
         world.setGravity(new Vector2(0, 0))
@@ -54,19 +55,18 @@ class Main extends PortableApplication(2000, 1000) {
     }
 
     override def onGraphicRender(g: GdxGraphics): Unit = {
-        //println(polyGen.triangleStash.length, polyGen.squareStash.length, polyGen.pentagonStash.length, polyGen.bigPentaStash.length)
-        val playerPosition = p1.getPos
         g.clear()
+        val playerPosition = p1.getPos
         for(i <- settings.BOX_WIDTH/10 until settings.BOX_WIDTH by settings.BOX_WIDTH/10){
             g.drawLine(i, 0, i, settings.BOX_HEIGHT, Color.DARK_GRAY)
         }
         for (i <- settings.BOX_WIDTH/10 until settings.BOX_HEIGHT by settings.BOX_WIDTH/10) {
             g.drawLine(0, i, settings.BOX_WIDTH, i, Color.DARK_GRAY)
         }
-        g.drawString(playerPosition.x, playerPosition.y - 40, p1.exp.toString)
-        // Physics update
+
+        // pellets update
         polyGen.pelletUpdate()
-        PhysicsWorld.updatePhysics(Gdx.graphics.getDeltaTime)
+
         // Camera follows the hero
         g.zoom(zoom.toFloat)
         g.moveCamera((playerPosition.x - getWindowWidth / 2 * zoom).toFloat, (playerPosition.y - getWindowHeight / 2 * zoom).toFloat)
@@ -87,9 +87,12 @@ class Main extends PortableApplication(2000, 1000) {
 
         if (Gdx.input.isKeyPressed(Input.Keys.E)) p1.playerBox.applyBodyAngularImpulse(0.5f,false)
 
+        PhysicsWorld.updatePhysics(Gdx.graphics.getDeltaTime)
         p1.update(Gdx.graphics.getDeltaTime)
         p1.draw(g)
         dbgRenderer.render(world, g.getCamera.combined)
+        g.drawString(playerPosition.x, playerPosition.y - 40, p1.exp.toString)
+
         val mouseX = Gdx.input.getX()
         val mouseY = Gdx.input.getY()
         val posMouse: Vector2 = new Vector2(mouseX.toFloat + 1, mouseY.toFloat + 1)
@@ -103,36 +106,96 @@ class Main extends PortableApplication(2000, 1000) {
         }
 
 
-        //dessin hud level up
-        val posRefXp: Vector2 = new Vector2(playerPosition.x - 800 * zoom.toFloat, playerPosition.y - 400 * zoom.toFloat)
-        for(i <- 0 to 5){
-            g.drawRectangle(posRefXp.x, posRefXp.y + 100 * i * zoom.toFloat, 300 * zoom.toFloat, 100 * zoom.toFloat, 0)
-        }
 
-        val colorTab: Array[Color] = Array(Color.FOREST, Color.GOLD, Color.CYAN, Color.YELLOW, Color.RED, Color.PINK)
-        val playerStats: Array[Int] = Array(p1.stats.regen, p1.stats.maxHealth, p1.stats.bulletSpeed, p1.stats.bulletDamage, p1.stats.reload, p1.stats.movementSpeed)
-        for(j <- 0 to 5){
-            for (i <- 0 until playerStats(j)) {
-                g.drawFilledRectangle(posRefXp.x - 140 * zoom.toFloat + 40 * i * zoom.toFloat, posRefXp.y + j * 100 * zoom.toFloat, 20 * zoom.toFloat, 100 * zoom.toFloat, 0, colorTab(j))
+        /*
+        * ------------------------------------------
+        *            gestion level up
+        * ------------------------------------------
+        */
+
+        val lvlUtil: Int = p1.stats.regen + p1.stats.maxHealth + p1.stats.bulletSpeed + p1.stats.bulletDamage + p1.stats.reload + p1.stats.movementSpeed - 5
+        if(lvlUtil != p1.getLevel()) {
+            if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)){
+                if(p1.stats.movementSpeed < 8 && released) {
+                    released = false
+                    p1.stats.movementSpeed += 1
+                }
+            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+                if (p1.stats.reload < 8 && released) {
+                    released = false
+                    p1.stats.reload += 1
+                }
+            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
+                if (p1.stats.bulletDamage < 8 && released) {
+                    released = false
+                    p1.stats.bulletDamage += 1
+                }
+            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_4)) {
+                if (p1.stats.bulletSpeed < 8 && released) {
+                    released = false
+                    p1.stats.bulletSpeed += 1
+                }
+            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_5)) {
+                if (p1.stats.maxHealth < 8 && released) {
+                    released = false
+                    p1.stats.maxHealth += 1
+                }
+            } else if (Gdx.input.isKeyPressed(Input.Keys.NUM_6)) {
+                if (p1.stats.regen < 8 && released) {
+                    released = false
+                    p1.stats.regen += 1
+                }
+            } else {
+                released = true
+            }
+
+
+            /*
+            * ------------------------------------------
+            *           dessin hud level up
+            * ------------------------------------------
+            */
+
+            //calcule la position du coin de l'ecran par rapport au joueur
+            val posRefXp: Vector2 = new Vector2(playerPosition.x - 800 * zoom.toFloat, playerPosition.y - 400 * zoom.toFloat)
+            //dessine les rectangles de separation des categories
+            for (i <- 0 to 5) {
+                g.drawRectangle(posRefXp.x, posRefXp.y + 100 * i * zoom.toFloat, 300 * zoom.toFloat, 100 * zoom.toFloat, 0)
+            }
+
+            //cree un tableau des couleurs et des stats pour les afficher dans l'ordre facilement
+            val colorTab: Array[Color] = Array(Color.FOREST, Color.GOLD, Color.CYAN, Color.YELLOW, Color.RED, Color.PINK)
+            val playerStats: Array[Int] = Array(p1.stats.regen, p1.stats.maxHealth, p1.stats.bulletSpeed, p1.stats.bulletDamage, p1.stats.reload, p1.stats.movementSpeed)
+            //affiche les stats dans leurs categories respectives avec des barres verticales (entre 1 et 8)
+            for (j <- 0 to 5) {
+                for (i <- 0 until playerStats(j)) {
+                    g.drawFilledRectangle(posRefXp.x - 140 * zoom.toFloat + 40 * i * zoom.toFloat, posRefXp.y + j * 100 * zoom.toFloat, 20 * zoom.toFloat, 100 * zoom.toFloat, 0, colorTab(j))
+                }
+            }
+
+            //si le zoom a ete modifie depuis la derniere creation de font, en refait une pour adapter la taille du texte
+            if ((40.0 * zoom).toInt != prevParam) {
+                val optimusF: FileHandle = Gdx.files.internal("data/font/Timeless.ttf")
+                val generator: FreeTypeFontGenerator = new FreeTypeFontGenerator(optimusF)
+                val parameter: FreeTypeFontParameter = new FreeTypeFontParameter()
+                prevParam = (40.0 * zoom).toInt
+                parameter.size = generator.scaleForPixelHeight(prevParam)
+                parameter.color = Color.WHITE
+                policeTextes = generator.generateFont(parameter)
+            }
+
+            //affiche le texte des stats par dessus les barres
+            val strStats: Array[String] = Array("regen (6)", "maxHealth (5)", "bulletSpeed (4)", "bulletDamage (3)", "reload (2)", "movementSpeed (1)")
+            for (i <- 0 to 5) {
+                g.drawString(posRefXp.x - 150 * zoom.toFloat, posRefXp.y + 10 * zoom.toFloat + 100 * i * zoom.toFloat, s"${strStats(i)}", policeTextes)
             }
         }
 
-        if((40.0 * zoom).toInt != prevParam) {
-            val optimusF: FileHandle = Gdx.files.internal("data/font/Timeless.ttf")
-            val generator: FreeTypeFontGenerator = new FreeTypeFontGenerator(optimusF)
-            val parameter: FreeTypeFontParameter = new FreeTypeFontParameter()
-            prevParam = (40.0 * zoom).toInt
-            parameter.size = generator.scaleForPixelHeight(prevParam)
-            parameter.color = Color.WHITE
-            policeTextes = generator.generateFont(parameter)
-        }
-        
-        val strStats: Array[String] = Array("regen (1)", "maxHealth (2)", "bulletSpeed (3)", "bulletDamage (4)", "reload (5)", "movementSpeed (6)")
-        for(i <- 0 to 5){
-            g.drawString(posRefXp.x - 150 * zoom.toFloat, posRefXp.y + 10 * zoom.toFloat + 100 * i * zoom.toFloat, s"${strStats(i)}", policeTextes)
-        }
-
-
+        /*
+        * ------------------------------------------
+        *       dessin FPS et logo de l'ecole
+        * ------------------------------------------
+        */
 
         g.drawFPS()
         g.drawSchoolLogo()

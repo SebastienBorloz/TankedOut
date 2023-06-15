@@ -18,7 +18,7 @@ import scala.collection.mutable.ArrayBuffer
 class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector2, val angle: Float) extends DrawableObject {
     val playerBox = new PhysicsCircle("playerCenter", inPosition, ray, angle)
     playerBox.setCollisionGroup(-1)
-    private val stats: statSheet = new statSheet(1, 1, 1, 1, 8, 1)
+    val stats: statSheet = new statSheet(1, 1, 1, 1, 8, 1)
     var Boulettes: ArrayBuffer[Bullet] = new ArrayBuffer[Bullet]()
     var moveRight = false
     var moveLeft = false
@@ -29,6 +29,7 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
     var mouseAngle: Float = 0
     var horses: Int = 25
     var exp: Int = 0
+    var lvl: Int = 1
     var rupteur: Int = 2
 
     def getPos: Vector2 = playerBox.getBodyPosition
@@ -85,9 +86,9 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
             val spawnPos: Vector2 = new Vector2(playerBox.getBodyPosition)
             spawnPos.x += 40 * math.sin(mouseAngle * math.Pi / 180).toFloat
             if(mouseAngle < 180) {
-                spawnPos.y -= 50 * math.cos(mouseAngle * math.Pi / 180).toFloat
+                spawnPos.y -= 60 * math.cos(mouseAngle * math.Pi / 180).toFloat
             }else{
-                spawnPos.y += 50 * math.cos(mouseAngle * math.Pi / 180).toFloat
+                spawnPos.y += 60 * math.cos(mouseAngle * math.Pi / 180).toFloat
             }
             Boulettes.addOne(new Bullet(this.Boulettes,this,10, 10, mouseAngle, spawnPos))
         }

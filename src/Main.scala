@@ -8,7 +8,11 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.desktop.PortableApplication
+import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.badlogic.gdx.math.{Vector2, Vector3}
 import exp.PelletFactory
 import setup.settings
@@ -32,7 +36,8 @@ class Main extends PortableApplication(2000, 1000) {
     private var zoom = .0
     private var p1: Joueur = null
     private var polyGen: PelletFactory = new PelletFactory()
-
+    private var prevParam: Int = 0
+    private var policeTextes: BitmapFont = null
 
     override def onInit(): Unit = { // No gravity in this world
         world.setGravity(new Vector2(0, 0))
@@ -97,15 +102,35 @@ class Main extends PortableApplication(2000, 1000) {
             g.drawFilledRectangle(playerPosition.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, playerPosition.y + 30 * math.cos(angle * math.Pi / 180.0).toFloat, 21, 33, 180 - angle, Color.DARK_GRAY)
         }
 
-        //dessin hud level up
-        val posRefXp: Vector2 = new Vector2(playerPosition.x - 1750, playerPosition.y - 950)
-        g.drawRectangle(posRefXp.x, posRefXp.y, 400, 160, 0)
-        g.drawRectangle(posRefXp.x , posRefXp.y + 160, 400, 160, 0)
-        g.drawRectangle(posRefXp.x, posRefXp.y + 320, 400, 160, 0)
-        g.drawRectangle(posRefXp.x, posRefXp.y + 480, 400, 160, 0)
-        g.drawRectangle(posRefXp.x, posRefXp.y + 640, 400, 160, 0)
-        g.drawRectangle(posRefXp.x, posRefXp.y + 800, 400, 160, 0)
 
+        //dessin hud level up
+        val posRefXp: Vector2 = new Vector2(playerPosition.x - 800 * zoom.toFloat, playerPosition.y - 400 * zoom.toFloat)
+        for(i <- 0 to 5){
+            g.drawRectangle(posRefXp.x, posRefXp.y + 100 * i * zoom.toFloat, 300 * zoom.toFloat, 100 * zoom.toFloat, 0)
+        }
+
+        val colorTab: Array[Color] = Array(Color.FOREST, Color.GOLD, Color.CYAN, Color.YELLOW, Color.RED, Color.PINK)
+        val playerStats: Array[Int] = Array(p1.stats.regen, p1.stats.maxHealth, p1.stats.bulletSpeed, p1.stats.bulletDamage, p1.stats.reload, p1.stats.movementSpeed)
+        for(j <- 0 to 5){
+            for (i <- 0 until playerStats(j)) {
+                g.drawFilledRectangle(posRefXp.x - 140 * zoom.toFloat + 40 * i * zoom.toFloat, posRefXp.y + j * 100 * zoom.toFloat, 20 * zoom.toFloat, 100 * zoom.toFloat, 0, colorTab(j))
+            }
+        }
+
+        if((40.0 * zoom).toInt != prevParam) {
+            val optimusF: FileHandle = Gdx.files.internal("data/font/Timeless.ttf")
+            val generator: FreeTypeFontGenerator = new FreeTypeFontGenerator(optimusF)
+            val parameter: FreeTypeFontParameter = new FreeTypeFontParameter()
+            prevParam = (40.0 * zoom).toInt
+            parameter.size = generator.scaleForPixelHeight(prevParam)
+            parameter.color = Color.WHITE
+            policeTextes = generator.generateFont(parameter)
+        }
+        
+        val strStats: Array[String] = Array("regen (1)", "maxHealth (2)", "bulletSpeed (3)", "bulletDamage (4)", "reload (5)", "movementSpeed (6)")
+        for(i <- 0 to 5){
+            g.drawString(posRefXp.x - 150 * zoom.toFloat, posRefXp.y + 10 * zoom.toFloat + 100 * i * zoom.toFloat, s"${strStats(i)}", policeTextes)
+        }
 
 
 

@@ -13,4 +13,8 @@ object settings {
   val BOX_HEIGHT: Int = 6000
   val CENTER_X: Int = BOX_WIDTH / 2
   val CENTER_Y: Int = BOX_HEIGHT / 2
+
+  val LEVEL_UPS: Array[Int] = Array(4, 13, 28, 50, 78, 113, 157, 211, 275, 350, 437, 538, 655, 787)
+  val NIV_MAX: Int = LEVEL_UPS.length + 1
+
 }

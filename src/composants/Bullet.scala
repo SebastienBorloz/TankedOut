@@ -8,7 +8,7 @@ import exp.{bigPentaPellet, pentagonPellet, squarePellet, trianglePellet}
 
 import scala.collection.mutable.ArrayBuffer
 
-class Bullet(tab: ArrayBuffer[Bullet],joueur: Joueur, pvIn: Int, speedIn: Int, angleIn: Float, position: Vector2) extends PhysicsCircle("Boulette", position, 10, 1, 1, 0) {
+class Bullet(tab: ArrayBuffer[Bullet], joueur: Joueur, damage: Int, speedIn: Int, angleIn: Float, position: Vector2) extends PhysicsCircle("Boulette", position, 10, 1, 1, 0) {
     val trueAngle: Float = (angleIn * math.Pi / 180).toFloat
 
     if(angleIn > 180) {
@@ -26,7 +26,7 @@ class Bullet(tab: ArrayBuffer[Bullet],joueur: Joueur, pvIn: Int, speedIn: Int, a
 
         if(theOtherObject.getBody.getType != BodyDef.BodyType.StaticBody && theOtherObject != joueur.playerBox){
             val gravitere = theOtherObject.getBody.getGravityScale
-            if(gravitere - pvIn < 0){
+            if(gravitere - damage < 0){
                 theOtherObject.getBody.getMass.toInt match{
                     case 1 =>
                         joueur.exp += 10
@@ -73,7 +73,7 @@ class Bullet(tab: ArrayBuffer[Bullet],joueur: Joueur, pvIn: Int, speedIn: Int, a
                         joueur.bouboules.bigPentaStash.subtractOne(savedI)
                 }
             }else {
-                theOtherObject.getBody.setGravityScale(gravitere - pvIn)
+                theOtherObject.getBody.setGravityScale(gravitere - damage)
             }
         }
     }

@@ -18,7 +18,7 @@ import scala.collection.mutable.ArrayBuffer
 class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector2, val angle: Float) extends DrawableObject {
     val playerBox = new PhysicsCircle("playerCenter", inPosition, ray, angle)
     playerBox.setCollisionGroup(-1)
-    val stats: statSheet = new statSheet(1, 1, 1, 1, 1, 1)
+    val stats: statSheet = new statSheet()
     var Boulettes: ArrayBuffer[Bullet] = new ArrayBuffer[Bullet]()
     var moveRight = false
     var moveLeft = false
@@ -80,7 +80,7 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
         }
 
         // Gestion des tirs
-        if(shooting && shootingTemp < System.currentTimeMillis() - 1000/stats.reload){
+        if(shooting && shootingTemp < System.currentTimeMillis() - (20 + 500/stats.reload)){
             shootingTemp = System.currentTimeMillis()
             val spawnPos: Vector2 = new Vector2(playerBox.getBodyPosition)
             spawnPos.x += 40 * math.sin(mouseAngle * math.Pi / 180).toFloat
@@ -89,7 +89,7 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
             }else{
                 spawnPos.y += 60 * math.cos(mouseAngle * math.Pi / 180).toFloat
             }
-            Boulettes.addOne(new Bullet(this.Boulettes,this, stats.bulletDamage * 10, stats.bulletSpeed * 10, mouseAngle, spawnPos))
+            Boulettes.addOne(new Bullet(this.Boulettes,this, 3 + stats.bulletDamage * 5, 5 + stats.bulletSpeed * 3, mouseAngle, spawnPos))
         }
     }
     /** Fonction qui aligne le joueur en direction du curseur de la souris */

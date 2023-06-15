@@ -208,7 +208,15 @@ class Main extends PortableApplication(2000, 1000) {
                 g.drawString(posRefXp.x - 150 * zoom.toFloat, posRefXp.y + 10 * zoom.toFloat + 100 * i * zoom.toFloat, s"${strStats(i)}", policeTextes)
             }
         }
-
+        /** zone de searching and acquiring target pour le bot */
+        var bodies = new com.badlogic.gdx.utils.Array[Body]
+        var botDestination: Vector2 = new Vector2(0, 0)
+        world.getBodies(bodies)
+        for (i <- bodies.toArray) {
+            botDestination = b1.getNearestObject(i)
+        }
+        val direction = b1.getDirection(botDestination, b1.getPos)
+        b1.move(b1, b1.getPos, botDestination, direction)
         //dessin FPS et logo de l'ecole
         g.drawFPS()
         g.drawSchoolLogo()

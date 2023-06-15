@@ -55,6 +55,11 @@ class Main extends PortableApplication(2000, 1000) {
     }
 
     override def onGraphicRender(g: GdxGraphics): Unit = {
+
+        if (Gdx.input.isKeyPressed(Input.Keys.G)) {
+            p1.classy.playerClass = p1.classy.Sniper
+        }
+
         // mise a jour des pellets
         polyGen.pelletUpdate()
 
@@ -94,18 +99,8 @@ class Main extends PortableApplication(2000, 1000) {
         dbgRenderer.render(world, g.getCamera.combined)
         g.drawString(playerPosition.x, playerPosition.y - 40, p1.exp.toString)
 
-        //obtention de la position de la souris et affichage du canon dans sa direction
-        val mouseX = Gdx.input.getX()
-        val mouseY = Gdx.input.getY()
-        val posMouse: Vector2 = new Vector2(mouseX.toFloat + 1, mouseY.toFloat + 1)
-        val truePosMouse = g.getCamera.unproject(new Vector3(posMouse.x, posMouse.y, 0))
-        val angle: Float = p1.getAngle(new Vector2(truePosMouse.x,truePosMouse.y), playerPosition).toFloat
-        p1.mouseAngle = angle
-        if(angle < 180) {
-            g.drawFilledRectangle(playerPosition.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, playerPosition.y - 30 * math.cos(angle * math.Pi / 180.0).toFloat, 21, 33, angle, Color.DARK_GRAY)
-        }else{
-            g.drawFilledRectangle(playerPosition.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, playerPosition.y + 30 * math.cos(angle * math.Pi / 180.0).toFloat, 21, 33, 180 - angle, Color.DARK_GRAY)
-        }
+        //affichage du/des canons
+        p1.classy.Render(p1, playerPosition, g)
 
 
         //------------- gestion des levels up -------------

@@ -30,6 +30,7 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
     var horses: Int = 25
     var exp: Int = 0
     var rupteur: Int = 2
+    var classy: gestionDeClasses = new gestionDeClasses
 
     def getPos: Vector2 = playerBox.getBodyPosition
 
@@ -82,14 +83,7 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
         // Gestion des tirs
         if(shooting && shootingTemp < System.currentTimeMillis() - (20 + 500/stats.reload)){
             shootingTemp = System.currentTimeMillis()
-            val spawnPos: Vector2 = new Vector2(playerBox.getBodyPosition)
-            spawnPos.x += 40 * math.sin(mouseAngle * math.Pi / 180).toFloat
-            if(mouseAngle < 180) {
-                spawnPos.y -= 60 * math.cos(mouseAngle * math.Pi / 180).toFloat
-            }else{
-                spawnPos.y += 60 * math.cos(mouseAngle * math.Pi / 180).toFloat
-            }
-            Boulettes.addOne(new Bullet(this.Boulettes,this, 3 + stats.bulletDamage * 5, 5 + stats.bulletSpeed * 3, mouseAngle, spawnPos))
+            classy.Shooting(mouseAngle,this)
         }
     }
     /** Fonction qui aligne le joueur en direction du curseur de la souris */

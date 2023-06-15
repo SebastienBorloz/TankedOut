@@ -1,36 +1,61 @@
 
 package composants
 
-import ch.hevs.gdx2d.components.physics.primitives.PhysicsCircle
+import ch.hevs.gdx2d.components.physics.primitives.{PhysicsCircle, PhysicsStaticBox}
+import ch.hevs.gdx2d.components.physics.utils.PhysicsConstants
 import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.lib.interfaces.DrawableObject
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
-import exp.PelletFactory
+import exp.{PelletFactory, bigPentaPellet, pentagonPellet, squarePellet, trianglePellet}
+import setup.settings
 
 import scala.io.AnsiColor._
 
 
-class Bot(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector2, val angle: Float) extends PhysicsCircle("this.", inPosition, ray, angle) with DrawableObject {
+class Bot(val bouboules: PelletFactory,val ray: Float, val position: Vector2, val angle: Float) extends PhysicsCircle("this.", position, ray, angle) with DrawableObject {
   var stats: statSheet = new statSheet(1, 1, 1, 1, 1, 1)
   this.setCollisionGroup(-1)
   def getInstance(): Bot = this
+  def getPos: Vector2 = this.getBodyPosition
 
   override def draw(g: GdxGraphics): Unit = {
     g.drawFilledCircle(this.getBodyPosition.x, this.getBodyPosition.y, 30, Color.BLUE)
   }
 
   def getNearestObject(array: com.badlogic.gdx.utils.Array[Body]): Vector2 ={
-    //mise en place d'une detectBoxe
+    var objectVector: Vector2 = Vector2.Zero
     var min: Double = getDistance(array.first().getPosition, this.getBodyPosition)
-    var nearestObject = new Vector2(0,0)
+    var nearestObject = Vector2.Zero
+
     for(i <- array.toArray){
-      val dist : Double = getDistance(i.getPosition, this.getBodyPosition)
+      if(i.getUserData.isInstanceOf[trianglePellet]){
+        objectVector = i.getUserData.asInstanceOf[trianglePellet].position
+      }
+      if (i.getUserData.isInstanceOf[squarePellet]) {
+        objectVector = i.getUserData.asInstanceOf[squarePellet].position
+      }
+      if (i.getUserData.isInstanceOf[pentagonPellet]) {
+        objectVector = i.getUserData.asInstanceOf[pentagonPellet].position
+      }
+      if (i.getUserData.isInstanceOf[bigPentaPellet]) {
+        objectVector = i.getUserData.asInstanceOf[bigPentaPellet].position
+      }
+      if (i.getUserData.isInstanceOf[Joueur]) {
+        objectVector = i.getUserData.asInstanceOf[Joueur].inPosition
+      }
+      if(i.getUserData.isInstanceOf[PhysicsStaticBox]){
+        objectVector = new Vector2(settings.CENTER_X, settings.CENTER_Y)
+      }
+      val dist : Double = getDistance(objectVector, this.getBodyPosition)
       if(dist < min){
         nearestObject = i.getPosition
         min = dist
       }
+    }
+    if(nearestObject == Vector2.Zero){
+      nearestObject = new Vector2(settings.CENTER_X, settings.CENTER_Y)
     }
     return nearestObject
   }
@@ -49,21 +74,16 @@ class Bot(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector2, 
     return degrees
   }
 
-  def move(objectToMove: Bot, destination: Vector2, angle: Double): Unit= {
-    val horses = 0.25f
-    val rupteur = 2
-    println(s"${RED}j'ai une cible")
-    println(s"$RESET destination : $destination")
-
-    if (this.getBodyLinearVelocity.len() > rupteur * stats.movementSpeed) {
-      this.applyBodyForce(this.getBodyLinearVelocity().scl(-50), this.getBodyWorldCenter, true)
+  def move(destination: Vector2): Unit= {
+    println(s"${RED}j'ai une cible$RESET à cette destination : $destination")
+    if (this.getBodyLinearVelocity.len() > settings.VITESSEMAX/2 * stats.movementSpeed) {
+      this.applyBodyForce(this.getBodyLinearVelocity().scl(-20), this.getBodyWorldCenter, true)
       println(s"$GREEN je freine")
     }else{
-      this.applyBodyForce(destination.scl(horses), this.getBodyWorldCenter,true)
+      this.applyBodyForce(new Vector2(destination.x - position.x, destination.y - position.y).scl(settings.BOTACCELERATION), this.getBodyWorldCenter,true)
     }
   }
 
-  def getPos: Vector2 = this.getBodyPosition
 }
 
 

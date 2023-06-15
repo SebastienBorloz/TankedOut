@@ -17,7 +17,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.badlogic.gdx.math.{Vector2, Vector3}
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef}
-import exp.PelletFactory
+import exp.{PelletFactory, trianglePellet}
 import setup.settings
 
 import scala.collection.mutable
@@ -36,7 +36,7 @@ object Main {
     }
 }
 
-class Main extends PortableApplication(2000, 1000) {
+class Main extends PortableApplication(1920, 1080) {
     private var dbgRenderer: DebugRenderer = null
     private val world = PhysicsWorld.getInstance
     private var zoom = .0
@@ -50,8 +50,6 @@ class Main extends PortableApplication(2000, 1000) {
     override def onInit(): Unit = { // No gravity in this world
         world.setGravity(new Vector2(0, 0))
         setTitle("Tanked Out")
-
-
 
         dbgRenderer = new DebugRenderer
 
@@ -185,13 +183,13 @@ class Main extends PortableApplication(2000, 1000) {
 
             //si le zoom a ete modifie depuis la derniere creation de font, en refait une pour adapter la taille du texte
             if ((40.0 * zoom).toInt != prevParam) {
-                val optimusF: FileHandle = Gdx.files.internal("data/font/Timeless.ttf")
-                val generator: FreeTypeFontGenerator = new FreeTypeFontGenerator(optimusF)
-                val parameter: FreeTypeFontParameter = new FreeTypeFontParameter()
-                prevParam = (40.0 * zoom).toInt
-                parameter.size = generator.scaleForPixelHeight(prevParam)
-                parameter.color = Color.WHITE
-                policeTextes = generator.generateFont(parameter)
+                //val optimusF: FileHandle = Gdx.files.internal("data/font/Timeless.ttf")
+                //val generator: FreeTypeFontGenerator = new FreeTypeFontGenerator(optimusF)
+                //val parameter: FreeTypeFontParameter = new FreeTypeFontParameter()
+                //prevParam = (40.0 * zoom).toInt
+                //parameter.size = generator.scaleForPixelHeight(prevParam)
+                //parameter.color = Color.WHITE
+                //policeTextes = generator.generateFont(parameter)
             }
 
             //affiche le texte des stats par dessus les barres
@@ -200,20 +198,12 @@ class Main extends PortableApplication(2000, 1000) {
                 g.drawString(posRefXp.x - 150 * zoom.toFloat, posRefXp.y + 10 * zoom.toFloat + 100 * i * zoom.toFloat, s"${strStats(i)}", policeTextes)
             }
         }
-        /** zone de searching and acquiring target pour le bot */
+        /** bot movements controls*/
         val bodies = new com.badlogic.gdx.utils.Array[Body]
         world.getBodies(bodies)
-        for(i<-bodies.toArray){
-            if(i.getType != BodyDef.BodyType.StaticBody){
+        //val direction = b1.getDirection(botDestination, b1.getPos)
+        b1.move(b1.getNearestObject(bodies))
 
-                println(i)
-            }
-
-        }
-        val botDestination: Vector2 = b1.getNearestObject(bodies)
-
-        val direction = b1.getDirection(botDestination, b1.getPos)
-        b1.move(b1, botDestination, direction)
         //dessin FPS et logo de l'ecole
         g.drawFPS()
         g.drawSchoolLogo()

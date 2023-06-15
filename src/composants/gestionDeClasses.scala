@@ -11,7 +11,7 @@ import scala.collection.mutable.ArrayBuffer
 class gestionDeClasses extends Enumeration{
     val Base, Sniper, MG, Doduble, Canon = Value
     var playerClass: gestionDeClasses#Value = Base
-    val tonkBitmap = new BitmapImage("data/images/tonk.png")
+    //val tonkBitmap = new BitmapImage("data/images/tonk.png")
 
     def Shooting(mouseAngle: Float, joueur: Joueur): Unit ={
         playerClass match{
@@ -100,11 +100,11 @@ class gestionDeClasses extends Enumeration{
                 val angle: Float = p1.getAngle(new Vector2(truePosMouse.x, truePosMouse.y), playerPosition).toFloat
                 p1.mouseAngle = angle
 
-                if (angle < 180) {
-                    g.drawPicture(playerPosition.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, playerPosition.y + 30 * math.cos(angle * math.Pi / 180.0).toFloat, tonkBitmap)
-                } else {
-                    g.drawPicture(playerPosition.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, playerPosition.y + 30 * math.cos(angle * math.Pi / 180.0).toFloat, tonkBitmap)
-                }
+                //if (angle < 180) {
+                //    g.drawPicture(playerPosition.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, playerPosition.y + 30 * math.cos(angle * math.Pi / 180.0).toFloat, tonkBitmap)
+                //} else {
+                //    g.drawPicture(playerPosition.x + 30 * math.sin(angle * math.Pi / 180.0).toFloat, playerPosition.y + 30 * math.cos(angle * math.Pi / 180.0).toFloat, tonkBitmap)
+                //}
 
             case Doduble =>
                 val mouseX = Gdx.input.getX()

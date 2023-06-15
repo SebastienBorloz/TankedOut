@@ -1,17 +1,13 @@
 package composants
 
-import ch.hevs.gdx2d.components.physics.primitives.PhysicsBox
 import ch.hevs.gdx2d.components.physics.primitives.PhysicsCircle
-import ch.hevs.gdx2d.components.physics.utils.PhysicsConstants
 import ch.hevs.gdx2d.lib.GdxGraphics
+import ch.hevs.gdx2d.lib.interfaces.DrawableObject
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Vector2
-import ch.hevs.gdx2d.lib.interfaces.DrawableObject
-import com.badlogic.gdx.{Gdx, Input}
 import exp.PelletFactory
+import setup.settings
 
-import java.awt.MouseInfo.getPointerInfo
-import java.util
 import scala.collection.mutable.ArrayBuffer
 
 
@@ -27,9 +23,7 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
     var shooting = false
     var shootingTemp = 0L
     var mouseAngle: Float = 0
-    var horses: Int = 25
     var exp: Int = 0
-    var rupteur: Int = 2
     var classy: gestionDeClasses = new gestionDeClasses
 
     def getPos: Vector2 = this.getBodyPosition
@@ -64,7 +58,7 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
         if (moveRight) {
             baseVector.x += 1
         }
-        this.applyBodyForce(baseVector.scl(horses), this.getBodyWorldCenter, true)
+        this.applyBodyForce(baseVector.scl(settings.PLAYERACCELERATION), this.getBodyWorldCenter, true)
 
         // Le joueur ralentit si aucune touche directionnelle n'est pressée
         if (!moveUp && !moveDown && !moveLeft && !moveRight) {
@@ -75,7 +69,7 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
 
         //limitation de vitesse
         val longActu: Float = this.getBodyLinearVelocity.len()
-        val vitesseLimite: Int = rupteur * stats.movementSpeed
+        val vitesseLimite: Int = settings.VITESSEMAX * stats.movementSpeed
         if (longActu > vitesseLimite) {
             this.setBodyLinearVelocity(this.getBodyLinearVelocity.scl(vitesseLimite / longActu))
         }

@@ -19,63 +19,45 @@ class Bullet(tab: ArrayBuffer[Bullet], joueur: Joueur, damage: Int, speedIn: Int
     enableCollisionListener()
 
     override def collision(theOtherObject: AbstractPhysicsObject, energy: Float): Unit = {
-        if(theOtherObject != joueur){
+        // Pour détruire la bullet
+        if(!theOtherObject.isInstanceOf[Joueur]){
             destroy()
             tab.subtractOne(this)
         }
 
-        if(theOtherObject.getBody.getType != BodyDef.BodyType.StaticBody && theOtherObject != joueur){
-            val gravitere = theOtherObject.getBody.getGravityScale
-            if(gravitere - damage < 0){
-                theOtherObject.getBody.getMass.toInt match{
-                    case 1 =>
-                        joueur.exp += 10
-                        var savedI: trianglePellet = null
-                        for(i <- joueur.bouboules.triangleStash) {
-                            if (i.triangleBox.getBody == theOtherObject.getBody) {
-                                savedI = i
-                            }
-                        }
-                        theOtherObject.destroy()
-                        joueur.bouboules.triangleStash.subtractOne(savedI)
-
-                    case 13 =>
-                        var savedI: squarePellet = null
-                        joueur.exp += 25
-                        for (i <- joueur.bouboules.squareStash) {
-                            if (i.squareBox.getBody == theOtherObject.getBody) {
-                                savedI = i
-                            }
-                        }
-                        theOtherObject.destroy()
-                        joueur.bouboules.squareStash.subtractOne(savedI)
-
-                    case 44 =>
-                        var savedI: pentagonPellet = null
-                        joueur.exp += 40
-                        for (i <- joueur.bouboules.pentagonStash) {
-                            if (i.pentagonBox.getBody == theOtherObject.getBody) {
-                                savedI = i
-                            }
-                        }
-                        theOtherObject.destroy()
-                        joueur.bouboules.pentagonStash.subtractOne(savedI)
-
-                    case 364 =>
-                        var savedI: bigPentaPellet = null
-                        joueur.exp += 150
-                        for (i <- joueur.bouboules.bigPentaStash) {
-                            if (i.bigPentaBox.getBody == theOtherObject.getBody) {
-                                savedI = i
-                            }
-                        }
-                        theOtherObject.destroy()
-                        joueur.bouboules.bigPentaStash.subtractOne(savedI)
-                    case _ =>
-
+        if(theOtherObject.isInstanceOf[bigPentaPellet] || theOtherObject.isInstanceOf[pentagonPellet] || theOtherObject.isInstanceOf[squarePellet]
+           || theOtherObject.isInstanceOf[Bot] || theOtherObject.isInstanceOf[trianglePellet]) {
+            if (theOtherObject.isInstanceOf[bigPentaPellet]) {
+                if (theOtherObject.asInstanceOf[bigPentaPellet].valeur > 0) {
+                    theOtherObject.asInstanceOf[bigPentaPellet].valeur - damage
+                } else {
+                    theOtherObject.destroy()
+                    joueur.bouboules.bigPentaStash.subtractOne(theOtherObject.asInstanceOf[bigPentaPellet])
                 }
-            }else {
-                theOtherObject.getBody.setGravityScale(gravitere - damage)
+            }
+            if (theOtherObject.isInstanceOf[pentagonPellet]) {
+                if (theOtherObject.asInstanceOf[pentagonPellet].valeur > 0) {
+                    theOtherObject.asInstanceOf[pentagonPellet].valeur - damage
+                } else {
+                    theOtherObject.destroy()
+                    joueur.bouboules.pentagonStash.subtractOne(theOtherObject.asInstanceOf[pentagonPellet])
+                }
+            }
+            if (theOtherObject.isInstanceOf[squarePellet]) {
+                if (theOtherObject.asInstanceOf[squarePellet].valeur > 0) {
+                    theOtherObject.asInstanceOf[squarePellet].valeur - damage
+                } else {
+                    theOtherObject.destroy()
+                    joueur.bouboules.squareStash.subtractOne(theOtherObject.asInstanceOf[squarePellet])
+                }
+            }
+            if (theOtherObject.isInstanceOf[trianglePellet]) {
+                if (theOtherObject.asInstanceOf[trianglePellet].valeur > 0) {
+                    theOtherObject.asInstanceOf[trianglePellet].valeur - damage
+                } else {
+                    theOtherObject.destroy()
+                    joueur.bouboules.triangleStash.subtractOne(theOtherObject.asInstanceOf[trianglePellet])
+                }
             }
         }
     }

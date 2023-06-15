@@ -1,9 +1,9 @@
 package composants
 
-import ch.hevs.gdx2d.components.physics.primitives.{PhysicsCircle, PhysicsStaticBox}
+import ch.hevs.gdx2d.components.physics.primitives.PhysicsCircle
 import ch.hevs.gdx2d.lib.physics.AbstractPhysicsObject
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.{BodyDef, MassData}
+import com.badlogic.gdx.physics.box2d.BodyDef
 import exp.{bigPentaPellet, pentagonPellet, squarePellet, trianglePellet}
 
 import scala.collection.mutable.ArrayBuffer
@@ -65,7 +65,7 @@ class Bullet(tab: ArrayBuffer[Bullet], joueur: Joueur, damage: Int, speedIn: Int
                         var savedI: bigPentaPellet = null
                         joueur.exp += 150
                         for (i <- joueur.bouboules.bigPentaStash) {
-                            if (i.bigPentaBox.getBody == theOtherObject.getBody) {
+                            if (i.getBody == theOtherObject.getBody) {
                                 savedI = i
                             }
                         }

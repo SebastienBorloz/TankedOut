@@ -16,7 +16,6 @@ import scala.collection.mutable.ArrayBuffer
 
 
 class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector2, val angle: Float) extends PhysicsCircle("playerCenter", inPosition, ray, angle) with DrawableObject {
-    
     this.setCollisionGroup(-1)
     val stats: statSheet = new statSheet()
     var Boulettes: ArrayBuffer[Bullet] = new ArrayBuffer[Bullet]()
@@ -38,7 +37,6 @@ class Joueur(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector
         val pos = this.getBodyPosition
         g.drawFilledCircle(pos.x, pos.y, 30, Color.FIREBRICK)
     }
-
 
     /** Fonction de gestion des déplacements du joueur et des tirs*/
     def update(deltaTime: Float): Unit = {

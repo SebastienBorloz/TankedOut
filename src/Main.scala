@@ -1,7 +1,5 @@
 package ch.hevs.gdx2d
 
-import ch.hevs.gdx2d.Main.main
-import ch.hevs.gdx2d.components.bitmaps.BitmapImage
 import composants.{Bot, Joueur}
 import ch.hevs.gdx2d.components.physics.utils.PhysicsScreenBoundaries
 import ch.hevs.gdx2d.desktop.physics.DebugRenderer
@@ -19,10 +17,6 @@ import com.badlogic.gdx.math.{Vector2, Vector3}
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef}
 import exp.{PelletFactory, trianglePellet}
 import setup.settings
-
-import scala.collection.mutable
-import scala.collection.mutable.ArrayBuffer
-
 
 /**
  * TankedOut

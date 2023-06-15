@@ -1,9 +1,8 @@
 package composants
 
-import ch.hevs.gdx2d.components.physics.primitives.{PhysicsCircle, PhysicsStaticBox}
+import ch.hevs.gdx2d.components.physics.primitives.PhysicsCircle
 import ch.hevs.gdx2d.lib.physics.AbstractPhysicsObject
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.{BodyDef, MassData}
 import exp.{bigPentaPellet, pentagonPellet, squarePellet, trianglePellet}
 
 import scala.collection.mutable.ArrayBuffer
@@ -19,7 +18,6 @@ class Bullet(tab: ArrayBuffer[Bullet], joueur: Joueur, damage: Int, speedIn: Int
     enableCollisionListener()
 
     override def collision(theOtherObject: AbstractPhysicsObject, energy: Float): Unit = {
-        // Pour détruire la bullet
         if(!theOtherObject.isInstanceOf[Joueur]){
             destroy()
             tab.subtractOne(this)

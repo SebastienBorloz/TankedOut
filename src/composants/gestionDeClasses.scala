@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.{Vector2, Vector3}
 import scala.collection.mutable.ArrayBuffer
 
 class gestionDeClasses extends Enumeration{
+    //creation du modele de l'enumeration et declaration d'un exemplaire pour le joueur
     val Base, Sniper, MG, Doduble, Canon = Value
     var playerClass: gestionDeClasses#Value = Base
     //val tonkBitmap = new BitmapImage("data/images/tonk.png")

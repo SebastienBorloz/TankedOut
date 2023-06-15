@@ -12,23 +12,21 @@ import exp.PelletFactory
 import scala.io.AnsiColor._
 
 
-class Bot(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector2, val angle: Float) extends DrawableObject {
-  val hitBoxNumber: Int = 100
+class Bot(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector2, val angle: Float) extends PhysicsCircle("this.", inPosition, ray, angle) with DrawableObject {
   var stats: statSheet = new statSheet(1, 1, 1, 1, 1, 1)
-  var botBox = new PhysicsCircle("botBox", inPosition, ray, angle)
-  botBox.setCollisionGroup(-1)
+  this.setCollisionGroup(-1)
   def getInstance(): Bot = this
 
   override def draw(g: GdxGraphics): Unit = {
-    g.drawFilledCircle(botBox.getBodyPosition.x, botBox.getBodyPosition.y, 30, Color.BLUE)
+    g.drawFilledCircle(this.getBodyPosition.x, this.getBodyPosition.y, 30, Color.BLUE)
   }
 
   def getNearestObject(array: com.badlogic.gdx.utils.Array[Body]): Vector2 ={
     //mise en place d'une detectBoxe
-    var min: Double = getDistance(array.first().getPosition, botBox.getBodyPosition)
+    var min: Double = getDistance(array.first().getPosition, this.getBodyPosition)
     var nearestObject = new Vector2(0,0)
     for(i <- array.toArray){
-      val dist : Double = getDistance(i.getPosition, botBox.getBodyPosition)
+      val dist : Double = getDistance(i.getPosition, this.getBodyPosition)
       if(dist < min){
         nearestObject = i.getPosition
         min = dist
@@ -57,15 +55,15 @@ class Bot(val bouboules: PelletFactory,val ray: Float, val inPosition: Vector2, 
     println(s"${RED}j'ai une cible")
     println(s"$RESET destination : $destination")
 
-    if (botBox.getBodyLinearVelocity.len() > rupteur * stats.movementSpeed) {
-      botBox.applyBodyForce(botBox.getBodyLinearVelocity().scl(-50), botBox.getBodyWorldCenter, true)
+    if (this.getBodyLinearVelocity.len() > rupteur * stats.movementSpeed) {
+      this.applyBodyForce(this.getBodyLinearVelocity().scl(-50), this.getBodyWorldCenter, true)
       println(s"$GREEN je freine")
     }else{
-      botBox.applyBodyForce(destination.scl(horses), botBox.getBodyWorldCenter,true)
+      this.applyBodyForce(destination.scl(horses), this.getBodyWorldCenter,true)
     }
   }
 
-  def getPos: Vector2 = botBox.getBodyPosition
+  def getPos: Vector2 = this.getBodyPosition
 }
 
 

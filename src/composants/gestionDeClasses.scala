@@ -26,7 +26,7 @@ class gestionDeClasses extends Enumeration{
                 joueur.Boulettes.addOne(new Bullet(joueur.Boulettes, joueur, 3 + joueur.stats.bulletDamage * 5, 5 + joueur.stats.bulletSpeed * 3, mouseAngle, spawnPos))
 
             case Sniper =>
-                val spawnPos: Vector2 = new Vector2(joueur.playerBox.getBodyPosition)
+                val spawnPos: Vector2 = new Vector2(joueur.getBodyPosition)
                 spawnPos.x += 60 * math.sin(mouseAngle * math.Pi / 180).toFloat
                 if (mouseAngle < 180) {
                     spawnPos.y -= 60 * math.cos(mouseAngle * math.Pi / 180).toFloat
@@ -37,8 +37,8 @@ class gestionDeClasses extends Enumeration{
 
             case MG =>
             case Doduble =>
-                val spawnPos1: Vector2 = new Vector2(joueur.playerBox.getBodyPosition)
-                val spawnPos2: Vector2 = new Vector2(joueur.playerBox.getBodyPosition)
+                val spawnPos1: Vector2 = new Vector2(joueur.getBodyPosition)
+                val spawnPos2: Vector2 = new Vector2(joueur.getBodyPosition)
 
                 spawnPos1.x += 60 * math.sin((mouseAngle * math.Pi / 180) + 0.1).toFloat
                 spawnPos1.x += 60 * math.sin((mouseAngle * math.Pi / 180) - 0.1).toFloat
@@ -53,7 +53,7 @@ class gestionDeClasses extends Enumeration{
 
 
             case Canon =>
-                val spawnPos: Vector2 = new Vector2(joueur.playerBox.getBodyPosition)
+                val spawnPos: Vector2 = new Vector2(joueur.getBodyPosition)
                 spawnPos.x += 60 * math.sin(mouseAngle * math.Pi / 180).toFloat
                 if (mouseAngle < 180) {
                     spawnPos.y -= 60 * math.cos(mouseAngle * math.Pi / 180).toFloat

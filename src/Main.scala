@@ -1,25 +1,21 @@
 package ch.hevs.gdx2d
 
-import composants.{Bot, Joueur}
 import ch.hevs.gdx2d.components.physics.utils.PhysicsScreenBoundaries
-import ch.hevs.gdx2d.desktop.physics.DebugRenderer
-import ch.hevs.gdx2d.lib.physics.PhysicsWorld
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
-import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.desktop.PortableApplication
-import com.badlogic.gdx.files.FileHandle
+import ch.hevs.gdx2d.desktop.physics.DebugRenderer
+import ch.hevs.gdx2d.lib.GdxGraphics
+import ch.hevs.gdx2d.lib.physics.PhysicsWorld
+import com.badlogic.gdx.{Gdx, Input}
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
-import com.badlogic.gdx.math.{Vector2, Vector3}
-import com.badlogic.gdx.physics.box2d.{Body, BodyDef}
-import exp.{PelletFactory, trianglePellet}
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.Body
+import composants.{Bot, Joueur}
+import exp.PelletFactory
 import setup.settings
 
 /**
- * TankedOut
+ * Tanked Out
  * @author Brocard Sébastien
  * @author Duc Jeremy
  *
@@ -31,8 +27,8 @@ object Main {
 }
 
 class Main extends PortableApplication(1920, 1080) {
-    private var dbgRenderer: DebugRenderer = null
     private val world = PhysicsWorld.getInstance
+    private var dbgRenderer: DebugRenderer = null
     private var zoom = .0
     private var p1: Joueur = null
     private var b1: Bot = null
@@ -66,7 +62,6 @@ class Main extends PortableApplication(1920, 1080) {
         // mise a jour des pellets
         polyGen.pelletUpdate()
         PhysicsWorld.updatePhysics(Gdx.graphics.getDeltaTime)
-        // la caméra suit le joueur
 
         // obtention de la position du joueur 1 et centrage de la camera sur lui
         val playerPosition = p1.getPos

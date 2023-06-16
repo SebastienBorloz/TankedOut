@@ -13,8 +13,8 @@ import setup.settings
 
 import scala.io.AnsiColor._
 
-
-class Bot(val bouboules: PelletFactory,val ray: Float, val position: Vector2, val angle: Float) extends PhysicsCircle("this.", position, ray, angle) with DrawableObject {
+class Bot(val bouboules: PelletFactory,val ray: Float, val position: Vector2, val angle: Float)
+  extends PhysicsCircle("this.", position, ray, angle) with DrawableObject {
   var stats: statSheet = new statSheet(1, 1, 1, 1, 1, 1)
   this.setCollisionGroup(-1)
   def getInstance(): Bot = this
@@ -26,7 +26,7 @@ class Bot(val bouboules: PelletFactory,val ray: Float, val position: Vector2, va
     g.drawLine(this.getBodyPosition.x, this.getBodyPosition.y, getBodyPosition.x + PhysicsConstants.M2P*v.x, getBodyPosition.y + PhysicsConstants.M2P*v.y)
   }
 
-  def getNearestObject(array: com.badlogic.gdx.utils.Array[Body]): Vector2 ={
+  def getNearestObject(array: com.badlogic.gdx.utils.Array[Body]): Vector2 ={ // fonction qui return la posistion de l'objet le plus proche du bot
     var objectVector: Vector2 = Vector2.Zero
     var min: Double = getDistance(array.first().getPosition, this.getBodyPosition)
     var nearestObject = Vector2.Zero
@@ -62,21 +62,13 @@ class Bot(val bouboules: PelletFactory,val ray: Float, val position: Vector2, va
     return nearestObject
   }
 
-  def getDistance(p1: Vector2, p2: Vector2): Double = {
+  def getDistance(p1: Vector2, p2: Vector2): Double = { // donne la distance entre deux points
     val dx = p2.x - p1.x
     val dy = p2.y - p1.y
     return math.sqrt(dx * dx + dy * dy)
   }
 
-  def getDirection(but: Vector2, départ: Vector2): Double = {
-    val dx = but.x - départ.x
-    val dy = but.y - départ.y
-    val radians = math.atan2(dy, dx)
-    val degrees = math.toDegrees(radians)
-    return degrees
-  }
-
-  def move(destination: Vector2): Unit= {
+  def move(destination: Vector2): Unit= { // gestion des mouvements du bots
     destination.x = 500 * PhysicsConstants.P2M
     destination.y = 400 * PhysicsConstants.P2M
     println(s"${RED}j'ai une cible$RESET à cette destination : $destination")

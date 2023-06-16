@@ -20,8 +20,10 @@ class Bot(val bouboules: PelletFactory,val ray: Float, val position: Vector2, va
   def getInstance(): Bot = this
   def getPos: Vector2 = this.getBodyPosition
 
+  var v : Vector2 = Vector2.Zero
   override def draw(g: GdxGraphics): Unit = {
     g.drawFilledCircle(this.getBodyPosition.x, this.getBodyPosition.y, 30, Color.BLUE)
+    g.drawLine(this.getBodyPosition.x, this.getBodyPosition.y, getBodyPosition.x + PhysicsConstants.M2P*v.x, getBodyPosition.y + PhysicsConstants.M2P*v.y)
   }
 
   def getNearestObject(array: com.badlogic.gdx.utils.Array[Body]): Vector2 ={
@@ -75,13 +77,19 @@ class Bot(val bouboules: PelletFactory,val ray: Float, val position: Vector2, va
   }
 
   def move(destination: Vector2): Unit= {
+    destination.x = 500 * PhysicsConstants.P2M
+    destination.y = 400 * PhysicsConstants.P2M
     println(s"${RED}j'ai une cible$RESET à cette destination : $destination")
-    if (this.getBodyLinearVelocity.len() > settings.VITESSEMAX/2 * stats.movementSpeed) {
-      this.applyBodyForce(this.getBodyLinearVelocity().scl(-20), this.getBodyWorldCenter, true)
-      println(s"$GREEN je freine")
-    }else{
-      this.applyBodyForce(new Vector2(destination.x - position.x, destination.y - position.y).scl(settings.BOTACCELERATION), this.getBodyWorldCenter,true)
-    }
+    //if (this.getBodyLinearVelocity.len() > settings.VITESSEMAX/2 * stats.movementSpeed) {
+      //this.applyBodyForce(this.getBodyLinearVelocity().scl(-20), this.getBodyWorldCenter, true)
+      //println(s"$GREEN je freine")
+    //}else{
+      //v = new Vector2(this.getBodyPosition.x - destination.x, this.getBodyPosition.y - destination.y).scl(settings.BOTACCELERATION).scl(1/100f)
+      v = destination.scl(-1).add(getBodyPosition).scl(settings.BOTACCELERATION).scl(1 / 100f)
+
+    this.applyBodyForce(v, this.getBodyPosition,true)
+      println(v)
+    //}
   }
 
 }

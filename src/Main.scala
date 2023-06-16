@@ -50,8 +50,8 @@ class Main extends PortableApplication(1920, 1080) {
         // Create the obstacles in the scene
         new PhysicsScreenBoundaries(settings.BOX_WIDTH, settings.BOX_HEIGHT)
 
-        p1 = new Joueur(polyGen,30, new Vector2(200, 200), 0)
-        b1 = new Bot(polyGen,30, new Vector2(300,300),0)
+        p1 = new Joueur(polyGen,30, new Vector2(400, 400), 0)
+        b1 = new Bot(polyGen,30, new Vector2(150,200),0)
         zoom = 2
         polyGen.pelletInit()
     }

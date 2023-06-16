@@ -1,21 +1,25 @@
 package ch.hevs.gdx2d
 
+import composants.{Bot, Joueur}
 import ch.hevs.gdx2d.components.physics.utils.PhysicsScreenBoundaries
-import ch.hevs.gdx2d.desktop.PortableApplication
 import ch.hevs.gdx2d.desktop.physics.DebugRenderer
-import ch.hevs.gdx2d.lib.GdxGraphics
 import ch.hevs.gdx2d.lib.physics.PhysicsWorld
-import com.badlogic.gdx.{Gdx, Input}
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
+import ch.hevs.gdx2d.lib.GdxGraphics
+import ch.hevs.gdx2d.desktop.PortableApplication
+import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
-import composants.{Bot, Joueur}
 import exp.PelletFactory
 import setup.settings
 
 /**
- * Tanked Out
+ * TankedOut
  * @author Brocard Sébastien
  * @author Duc Jeremy
  *
@@ -27,12 +31,12 @@ object Main {
 }
 
 class Main extends PortableApplication(1920, 1080) {
-    private val world = PhysicsWorld.getInstance
     private var dbgRenderer: DebugRenderer = null
+    private val world = PhysicsWorld.getInstance
     private var zoom = .0
     private var p1: Joueur = null
     private var b1: Bot = null
-    private var polyGen: PelletFactory = new PelletFactory()
+    private val polyGen: PelletFactory = new PelletFactory()
     private var prevParam: Int = 0
     private var policeTextes: BitmapFont = null
     private var released: Boolean = true
@@ -52,14 +56,14 @@ class Main extends PortableApplication(1920, 1080) {
         polyGen.pelletInit()
     }
 
-
     override def onGraphicRender(g: GdxGraphics): Unit = {
+        //DEBUG OPTION: test des specialisations (INACHEVE)
         if (Gdx.input.isKeyPressed(Input.Keys.G)) {p1.classy.playerClass = p1.classy.Sniper}
         if (Gdx.input.isKeyPressed(Input.Keys.H)) {p1.classy.playerClass = p1.classy.Canon}
         if (Gdx.input.isKeyPressed(Input.Keys.J)) {p1.classy.playerClass = p1.classy.Doduble}
         if (Gdx.input.isKeyPressed(Input.Keys.K)) {p1.classy.playerClass = p1.classy.MG}
 
-        // mise a jour des pellets
+        // mise a jour des pellets et de la physique
         polyGen.pelletUpdate()
         PhysicsWorld.updatePhysics(Gdx.graphics.getDeltaTime)
 
@@ -81,7 +85,6 @@ class Main extends PortableApplication(1920, 1080) {
         else p1.moveLeft = false
         if (Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)) p1.moveRight = true
         else p1.moveRight = false
-
 
         //effacement complet de l'affichage
         g.clear()
@@ -152,6 +155,9 @@ class Main extends PortableApplication(1920, 1080) {
             }
 
             //------------- dessin hud level up -------------
+            // (les petits tremblements au moment des zooms ne sont pas un probleme car le joueur n'aura pas acces
+            // directement a cet outil de debug, il etait principalement prevu pour certaines specialisations comme
+            // le sniper qui a droit a un meilleur champs de vision)
 
             //calcule la position du coin de l'ecran par rapport au joueur
             val posRefXp: Vector2 = new Vector2(playerPosition.x - 800 * zoom.toFloat, playerPosition.y - 400 * zoom.toFloat)
@@ -172,13 +178,13 @@ class Main extends PortableApplication(1920, 1080) {
 
             //si le zoom a ete modifie depuis la derniere creation de font, en refait une pour adapter la taille du texte
             if ((40.0 * zoom).toInt != prevParam) {
-                //val optimusF: FileHandle = Gdx.files.internal("data/font/Timeless.ttf")
-                //val generator: FreeTypeFontGenerator = new FreeTypeFontGenerator(optimusF)
-                //val parameter: FreeTypeFontParameter = new FreeTypeFontParameter()
-                //prevParam = (40.0 * zoom).toInt
-                //parameter.size = generator.scaleForPixelHeight(prevParam)
-                //parameter.color = Color.WHITE
-                //policeTextes = generator.generateFont(parameter)
+                val optimusF: FileHandle = Gdx.files.internal("data/font/Timeless.ttf")
+                val generator: FreeTypeFontGenerator = new FreeTypeFontGenerator(optimusF)
+                val parameter: FreeTypeFontParameter = new FreeTypeFontParameter()
+                prevParam = (40.0 * zoom).toInt
+                parameter.size = generator.scaleForPixelHeight(prevParam)
+                parameter.color = Color.WHITE
+                policeTextes = generator.generateFont(parameter)
             }
 
             //affiche le texte des stats par dessus les barres
@@ -190,7 +196,6 @@ class Main extends PortableApplication(1920, 1080) {
         /** bot movements controls*/
         val bodies = new com.badlogic.gdx.utils.Array[Body]
         world.getBodies(bodies)
-        //val direction = b1.getDirection(botDestination, b1.getPos)
         b1.move(b1.getNearestObject(bodies))
 
         //dessin FPS et logo de l'ecole
@@ -198,11 +203,8 @@ class Main extends PortableApplication(1920, 1080) {
         g.drawSchoolLogo()
     }
 
-    override def onClick(x: Int, y: Int, button: Int): Unit = {
-        p1.shooting = true
-    }
 
-    override def onRelease(x: Int, y: Int, button: Int): Unit = {
-        p1.shooting = false
-    }
+    //fonctions de flags pour que le joueur sache quand l'utilisateur clique pour tirer
+    override def onClick(x: Int, y: Int, button: Int): Unit = {p1.shooting = true}
+    override def onRelease(x: Int, y: Int, button: Int): Unit = {p1.shooting = false}
 }

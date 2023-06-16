@@ -14,7 +14,7 @@ class gestionDeClasses extends Enumeration{
     var playerClass: gestionDeClasses#Value = Base
     val tonkBitmap = new BitmapImage("data/images/tonk.png")
 
-    def Shooting(mouseAngle: Float, joueur: Joueur): Unit ={
+    def Shooting(mouseAngle: Float, joueur: Joueur): Unit ={ //gestion du tir des variantes
         playerClass match{
             case Base =>
                 val spawnPos: Vector2 = new Vector2(joueur.getBodyPosition)
@@ -65,7 +65,7 @@ class gestionDeClasses extends Enumeration{
         }
     }
 
-    def Render(p1: Joueur, playerPosition:Vector2, g: GdxGraphics): Unit ={
+    def Render(p1: Joueur, playerPosition:Vector2, g: GdxGraphics): Unit ={ //affichages des variantes
         playerClass match{
             case Base =>
                 val mouseX = Gdx.input.getX()

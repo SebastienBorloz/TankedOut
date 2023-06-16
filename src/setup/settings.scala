@@ -2,10 +2,10 @@ package setup
 
 object settings {
   /** valeurs du nombres maximum de chaque pellets */
-  val NBR_TRIANGLES = 3
-  val NBR_SQUARES = 0
-  val NBR_PENTAGONS = 0
-  val NBR_BIGPENTAS = 0
+  val NBR_TRIANGLES = 200
+  val NBR_SQUARES = 120
+  val NBR_PENTAGONS = 40
+  val NBR_BIGPENTAS = 5
   /** Données de la map */
   val INTERNAL_RADIUS: Int = 150
   var EXTERNAL_RADIUS: Int = 750
